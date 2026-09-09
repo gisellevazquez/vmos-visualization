@@ -1,0 +1,102 @@
+{
+  "version": "iwsdk.scene.v1",
+  "units": "meters",
+  "components": {
+    "com.iwsdk.components.DomeGradient": {
+      "sky": [0.2423, 0.6172, 0.8308, 1],
+      "equator": [0.6584, 0.7084, 0.7913, 1],
+      "ground": [0.807, 0.7758, 0.7454, 1],
+      "intensity": 1
+    },
+    "com.iwsdk.components.IBLGradient": {
+      "sky": [0.6902, 0.749, 0.7843, 1],
+      "equator": [0.6584, 0.7084, 0.7913, 1],
+      "ground": [0.807, 0.7758, 0.7454, 1],
+      "intensity": 1
+    },
+    "PathQuery": {
+      "from": "tank-a",
+      "to": "tank-b"
+    }
+  },
+  "resources": {},
+  "nodes": [
+    {
+      "id": "ground",
+      "name": "Ground",
+      "content": {
+        "type": "asset",
+        "asset": "ground"
+      },
+      "transform": {
+        "position": [0, 0, 0]
+      },
+      "components": {
+        "LocomotionEnvironment": {}
+      }
+    },
+    {
+      "id": "tank-a",
+      "name": "Tank A",
+      "content": {
+        "type": "asset",
+        "asset": "tank"
+      },
+      "transform": {
+        "position": [-1.4, 0, -2.2]
+      }
+    },
+    {
+      "id": "tank-b",
+      "name": "Tank B",
+      "content": {
+        "type": "asset",
+        "asset": "tank"
+      },
+      "transform": {
+        "position": [1.4, 0, -2.2]
+      }
+    },
+    {
+      "id": "pipe-segment",
+      "name": "Pipe Segment",
+      "content": {
+        "type": "asset",
+        "asset": "pipe-segment"
+      },
+      "transform": {
+        "position": [0, 0.9, -2.2]
+      }
+    },
+    {
+      "id": "valve",
+      "name": "Valve",
+      "content": {
+        "type": "asset",
+        "asset": "valve"
+      },
+      "transform": {
+        "position": [0, 0.9, -2.2]
+      },
+      "components": {
+        "RayInteractable": {},
+        "Valve": {
+          "from": "tank-a",
+          "to": "tank-b",
+          "open": false
+        }
+      }
+    },
+    {
+      "id": "path-status-panel",
+      "name": "Path Status Panel",
+      "content": {
+        "type": "asset",
+        "asset": "path-status-panel"
+      },
+      "transform": {
+        "position": [0, 1.9, -2.2]
+      }
+    }
+  ]
+}
