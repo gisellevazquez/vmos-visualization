@@ -7,6 +7,9 @@ dist/
 _site/
 *.tsbuildinfo
 
+# Scratch diagnostic renders
+artifacts/
+
 # Environment files
 .env
 .env.local

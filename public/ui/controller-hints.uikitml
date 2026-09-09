@@ -1,0 +1,44 @@
+<style>
+  .panel {
+    flex-direction: column;
+    gap: 8;
+    width: 260;
+    padding-top: 14;
+    padding-right: 18;
+    padding-bottom: 14;
+    padding-left: 18;
+    background-color: #10171a;
+    border-color: #34464d;
+    border-width: 1;
+    border-radius: 10;
+  }
+  .row {
+    flex-direction: row;
+    align-items: center;
+    gap: 10;
+  }
+  .key {
+    color: #7fd0ff;
+    font-size: 13;
+    font-weight: 700;
+    width: 60;
+  }
+  .desc {
+    color: #f6fbff;
+    font-size: 13;
+  }
+</style>
+<div class="panel">
+  <div class="row">
+    <div class="key">Gatillo</div>
+    <div class="desc">apuntar y operar la válvula</div>
+  </div>
+  <div class="row">
+    <div class="key">Y</div>
+    <div class="desc">transparencia de tanques</div>
+  </div>
+  <div class="row">
+    <div class="key">X</div>
+    <div class="desc">mostrar/ocultar esta ayuda</div>
+  </div>
+</div>

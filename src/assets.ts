@@ -64,4 +64,9 @@ export default defineAssets({
     type: AssetType.UIKitML,
     name: 'Path Status Panel',
   },
+  'controller-hints-panel': {
+    url: publicAssetUrl('ui/controller-hints.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'Controller Hints',
+  },
 });

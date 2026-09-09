@@ -21,23 +21,24 @@
     },
     "render": {
       "near": 0.001,
-      "far": 200,
+      "far": 400,
       "camera": {
         "position": [
-          -4,
-          1.5,
-          -6
+          -127,
+          1.7,
+          0
         ],
         "lookAt": [
           0,
-          1.1,
-          -1.8
+          1.3,
+          0
         ]
       }
     },
     "features": {
       "locomotion": {
-        "useWorker": true
+        "useWorker": true,
+        "initialPlayerPosition": [-127, 0, 0]
       },
       "grabbing": true,
       "physics": true,

@@ -7,8 +7,8 @@
 
 import { CylinderGeometry, Mesh, MeshStandardMaterial } from '@iwsdk/core';
 
-const RADIUS = 0.08;
-const LENGTH = 1.6;
+const RADIUS = 0.38; // 30" line: 0.762 m diameter / 2, matches the real VMOS spec
+const LENGTH = 60; // clear span between tank walls
 
 const geometry = new CylinderGeometry(RADIUS, RADIUS, LENGTH, 20);
 geometry.rotateZ(Math.PI / 2);

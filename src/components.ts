@@ -6,8 +6,9 @@
  */
 
 import { defineComponents } from '@iwsdk/core';
+import { Ghostable } from './ghostable-component.js';
 import { PathQuery } from './path-query-component.js';
 import { Robot } from './robot-component.js';
 import { Valve } from './valve-component.js';
 
-export default defineComponents([Robot, Valve, PathQuery]);
+export default defineComponents([Robot, Valve, PathQuery, Ghostable]);

@@ -7,8 +7,8 @@
 
 import { BoxGeometry, Mesh, MeshStandardMaterial } from '@iwsdk/core';
 
-const WIDTH = 10;
-const DEPTH = 10;
+const WIDTH = 320; // covers player spawn through the far tank, plus margin
+const DEPTH = 100;
 const THICKNESS = 0.05;
 
 const geometry = new BoxGeometry(WIDTH, THICKNESS, DEPTH);

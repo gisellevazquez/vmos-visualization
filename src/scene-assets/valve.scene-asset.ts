@@ -7,7 +7,7 @@
 
 import { BoxGeometry, Mesh, MeshStandardMaterial } from '@iwsdk/core';
 
-const SIZE = 0.22;
+const SIZE = 1.2; // scaled to read as a valve body on a 0.8 m-diameter line
 
 const geometry = new BoxGeometry(SIZE, SIZE, SIZE);
 
