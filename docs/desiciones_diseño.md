@@ -1056,3 +1056,31 @@ pruebas, el nodo `ground` apareció con `"scale": [1, 1, 3.1304]` que nadie
 pidió — no lo revertí porque no sé si fue un ajuste automático del editor
 o algo previo sin loggear; el usuario decide si vuelve a 1.
 
+---
+
+### La rama no era perpendicular: 90° nominal, 175° real
+**Hallazgo del usuario con captura, corregido.**
+La rama a `HV-4003` se había reubicado (ver "HV-4003 quedaba tapado desde el
+spawn") priorizando despejar la línea de vista desde el spawn, sin volver a
+chequear el ángulo contra el caño principal. Resultado: la dirección elegida
+(normalize(-6,3)) quedaba a ~175° del tramo TK404→exportación, casi
+exactamente opuesta — visualmente un solo caño con un quiebre chico, no una
+Y. Desde una vista cenital (la del usuario) se leía como que el tramo largo
+seguía uniendo TK404 con TK401, aunque el mesh nunca llega más allá de
+x=5 (TK401 está en x=71).
+
+**Corregido:** la rama vuelve a `θ_spur - 90°`, la opción que se había
+descartado en el primer intento por creer que apuntaba "hacia el spawn" —
+error de esa sesión: esa evaluación usaba la posición vieja del spawn
+(`z=+6`), no la actual (`z=-18`). Con el spawn donde está ahora, esta
+dirección se aleja de él (hacia +Z, hacia la fila de tanques), así que
+resuelve la Y **y** evita la oclusión al mismo tiempo — no hacía falta el
+ángulo forzado de la vez pasada. Verificado con una vista cenital ajustada
+cerca del manifold (temporal, borrada después): la bifurcación se lee clara,
+90° reales.
+
+**Recalculado con esto:** `pipe-branch`, `valve-secondary` (nameplate
+incluida, misma regla de "al costado, perpendicular al propio caño" que ya
+usaba), `pipe-secondary-stub`, `pipe-secondary-endcap`. `HV-4001`/`HV-4002`
+no se tocaron.
+
