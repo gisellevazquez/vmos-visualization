@@ -14,9 +14,16 @@ import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from '@iwsdk/core';
 // docs/desiciones_diseño.md.
 const APRON_SIZE = 10;
 const APRON_THICKNESS = 0.1;
-// Pipe/valve sit at y=1.3 with a 0.38 m pipe radius (pipe.scene-asset.ts,
+// Pipe/valve sit at y=1.3 with a 0.38 m pipe radius (pipe-run.scene-asset.ts,
 // shared with the scene JSON's manifold placement) — support height reaches
 // exactly to the pipe's underside.
+//
+// The two built-in supports below are still axis-aligned in local space
+// (x=+-SUPPORT_SPACING/2, z=0) — they only land under the main line if this
+// asset's scene node is yawed to match the main line's direction (see the
+// "Reubicación real del manifold" entry in docs/desiciones_diseño.md). The
+// branch toward the secondary valve has no dedicated support of its own —
+// flagged there as a known gap, not fixed here.
 const SUPPORT_HEIGHT = 1.3 - 0.38;
 const SUPPORT_WIDTH = 0.3;
 const SUPPORT_SPACING = 3; // distance apart along the pipe run (X axis)

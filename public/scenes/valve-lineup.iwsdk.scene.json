@@ -1,277 +1,671 @@
 {
-  "version": "iwsdk.scene.v1",
-  "units": "meters",
-  "components": {
-    "com.iwsdk.components.DomeGradient": {
-      "sky": [0.2423, 0.6172, 0.8308, 1],
-      "equator": [0.6584, 0.7084, 0.7913, 1],
-      "ground": [0.807, 0.7758, 0.7454, 1],
-      "intensity": 1
-    },
-    "com.iwsdk.components.IBLGradient": {
-      "sky": [0.6902, 0.749, 0.7843, 1],
-      "equator": [0.6584, 0.7084, 0.7913, 1],
-      "ground": [0.807, 0.7758, 0.7454, 1],
-      "intensity": 1
-    },
-    "PathQuery": {
-      "from": "tk404",
-      "to": "tk401"
-    }
-  },
-  "player": {
-    "transform": {
-      "position": [0, 0, 6],
-      "rotationDeg": [0, 0, 0]
-    }
-  },
   "authoring": {
     "views": [
       {
+        "fov": 45,
         "id": "hero",
+        "position": [
+          -127,
+          55,
+          90
+        ],
+        "projection": "perspective",
         "role": "hero",
-        "projection": "perspective",
-        "position": [-127, 55, 90],
-        "target": [0, 10, 0],
-        "fov": 45
+        "target": [
+          0,
+          10,
+          0
+        ]
       },
       {
+        "height": 220,
         "id": "top",
-        "role": "diagnostic",
+        "position": [
+          0,
+          220,
+          0
+        ],
         "projection": "orthographic",
-        "position": [0, 220, 0],
-        "target": [0, 0, 0],
-        "height": 220
+        "role": "diagnostic",
+        "target": [
+          0,
+          0,
+          0
+        ]
       },
       {
+        "fov": 90,
         "id": "spawn-check",
-        "role": "diagnostic",
+        "position": [
+          0,
+          1.7,
+          -18
+        ],
         "projection": "perspective",
-        "position": [0, 1.7, 6],
-        "target": [0, 1.3, 0],
-        "fov": 90
+        "role": "diagnostic",
+        "target": [
+          0,
+          1.3,
+          -12
+        ]
       }
     ]
   },
-  "resources": {},
+  "components": {
+    "PathQuery": {
+      "from": "tk404",
+      "to": "linea-exportacion"
+    },
+    "com.iwsdk.components.DomeGradient": {
+      "equator": [
+        0.6584,
+        0.7084,
+        0.7913,
+        1
+      ],
+      "ground": [
+        0.807,
+        0.7758,
+        0.7454,
+        1
+      ],
+      "intensity": 1,
+      "sky": [
+        0.2423,
+        0.6172,
+        0.8308,
+        1
+      ]
+    },
+    "com.iwsdk.components.IBLGradient": {
+      "equator": [
+        0.6584,
+        0.7084,
+        0.7913,
+        1
+      ],
+      "ground": [
+        0.807,
+        0.7758,
+        0.7454,
+        1
+      ],
+      "intensity": 1,
+      "sky": [
+        0.6902,
+        0.749,
+        0.7843,
+        1
+      ]
+    }
+  },
   "nodes": [
     {
-      "id": "ground",
-      "name": "Ground",
-      "content": {
-        "type": "asset",
-        "asset": "ground"
-      },
-      "transform": {
-        "position": [0, 0, 0]
-      },
       "components": {
         "LocomotionEnvironment": {}
+      },
+      "content": {
+        "asset": "ground",
+        "type": "asset"
+      },
+      "id": "ground",
+      "name": "Ground",
+      "transform": {
+        "position": [
+          0,
+          0,
+          0
+        ],
+        "rotationDeg": [
+          0,
+          0,
+          0
+        ],
+        "scale": [
+          1.5661,
+          1,
+          4.0106
+        ]
       }
     },
     {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "tank",
+        "type": "asset"
+      },
       "id": "tk404",
       "name": "TK404",
-      "content": {
-        "type": "asset",
-        "asset": "tank"
-      },
       "transform": {
-        "position": [-71, 0, 0]
-      },
-      "components": {
-        "Ghostable": {}
+        "position": [
+          -71,
+          0,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "tank-enclosure",
+        "type": "asset"
+      },
       "id": "tk404-enclosure",
       "name": "TK404 Enclosure",
-      "content": {
-        "type": "asset",
-        "asset": "tank-enclosure"
-      },
       "transform": {
-        "position": [-71, 0, 0]
+        "position": [
+          -71,
+          0,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "tank-stair",
+        "type": "asset"
+      },
       "id": "tk404-stair",
       "name": "TK404 Stair",
-      "content": {
-        "type": "asset",
-        "asset": "tank-stair"
-      },
       "transform": {
-        "position": [-71, 0, 50.3]
+        "position": [
+          -71,
+          0,
+          50.3
+        ]
       }
     },
     {
+      "content": {
+        "asset": "tk404-id-label",
+        "type": "asset"
+      },
       "id": "tk404-id-label",
       "name": "TK404 Id Label",
-      "content": {
-        "type": "asset",
-        "asset": "tk404-id-label"
-      },
       "transform": {
-        "position": [-29.9, 14, 0],
-        "rotationDeg": [0, 90, 0],
+        "position": [
+          -29.9,
+          14,
+          0
+        ],
+        "rotationDeg": [
+          0,
+          90,
+          0
+        ],
         "scale": 4
       }
     },
     {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "tank",
+        "type": "asset"
+      },
       "id": "tk401",
       "name": "TK401",
-      "content": {
-        "type": "asset",
-        "asset": "tank"
-      },
       "transform": {
-        "position": [71, 0, 0]
-      },
-      "components": {
-        "Ghostable": {}
+        "position": [
+          71,
+          0,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "tank-enclosure",
+        "type": "asset"
+      },
       "id": "tk401-enclosure",
       "name": "TK401 Enclosure",
-      "content": {
-        "type": "asset",
-        "asset": "tank-enclosure"
-      },
       "transform": {
-        "position": [71, 0, 0]
+        "position": [
+          71,
+          0,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "tk401-id-label",
+        "type": "asset"
+      },
       "id": "tk401-id-label",
       "name": "TK401 Id Label",
-      "content": {
-        "type": "asset",
-        "asset": "tk401-id-label"
-      },
       "transform": {
-        "position": [29.9, 14, 0],
-        "rotationDeg": [0, -90, 0],
+        "position": [
+          29.9,
+          14,
+          0
+        ],
+        "rotationDeg": [
+          0,
+          -90,
+          0
+        ],
         "scale": 4
       }
     },
     {
-      "id": "pipe-segment",
-      "name": "Pipe Segment",
-      "content": {
-        "type": "asset",
-        "asset": "pipe-segment"
-      },
-      "transform": {
-        "position": [0, 1.3, 0]
-      },
       "components": {
         "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-main-line",
+        "type": "asset"
+      },
+      "id": "pipe-main-line",
+      "name": "Pipe Main Line (TK404 to export)",
+      "transform": {
+        "position": [
+          -12.4465,
+          1.3,
+          -7.021
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
       }
     },
     {
-      "id": "manifold-pad",
-      "name": "Manifold Pad",
+      "components": {
+        "Ghostable": {}
+      },
       "content": {
-        "type": "asset",
-        "asset": "manifold-pad"
+        "asset": "pipe-tee",
+        "type": "asset"
       },
+      "id": "manifold-tee",
+      "name": "Manifold Tee",
       "transform": {
-        "position": [0, 0, 0]
+        "position": [
+          0,
+          1.3,
+          -12
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
       },
+      "content": {
+        "asset": "pipe-branch",
+        "type": "asset"
+      },
+      "id": "pipe-branch",
+      "name": "Pipe Branch (to secondary)",
+      "transform": {
+        "position": [
+          -2.012,
+          1.3,
+          -10.994
+        ],
+        "rotationDeg": [
+          0,
+          -153.43,
+          0
+        ]
+      }
+    },
+    {
       "components": {
         "AudioSource": {
-          "src": "./audio/manifold-hum.wav",
-          "loop": true,
           "autoplay": true,
+          "loop": true,
           "positional": true,
-          "volume": 0.08,
-          "refDistance": 6
+          "refDistance": 6,
+          "src": "./audio/manifold-hum.wav",
+          "volume": 0.08
         }
+      },
+      "content": {
+        "asset": "manifold-pad",
+        "type": "asset"
+      },
+      "id": "manifold-pad",
+      "name": "Manifold Pad",
+      "transform": {
+        "position": [
+          0,
+          0,
+          -12
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
       }
     },
     {
-      "id": "ambient-wind",
-      "name": "Ambient Wind",
+      "components": {
+        "AudioSource": {
+          "autoplay": true,
+          "loop": true,
+          "positional": false,
+          "src": "./audio/wind.wav",
+          "volume": 0.05
+        }
+      },
       "content": {
         "type": "group"
       },
+      "id": "ambient-wind",
+      "name": "Ambient Wind",
       "transform": {
-        "position": [0, 5, 0]
-      },
-      "components": {
-        "AudioSource": {
-          "src": "./audio/wind.wav",
-          "loop": true,
-          "autoplay": true,
-          "positional": false,
-          "volume": 0.05
-        }
+        "position": [
+          0,
+          5,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "shed",
+        "type": "asset"
+      },
       "id": "manifold-shed",
       "name": "Manifold Shed",
-      "content": {
-        "type": "asset",
-        "asset": "shed"
-      },
       "transform": {
-        "position": [7, 0, -6],
-        "rotationDeg": [0, -49, 0]
+        "position": [
+          9,
+          0,
+          -9
+        ],
+        "rotationDeg": [
+          0,
+          -49,
+          0
+        ]
       }
     },
     {
+      "content": {
+        "asset": "valve-nameplate-panel",
+        "type": "asset"
+      },
       "id": "valve-nameplate",
       "name": "Valve Nameplate",
-      "content": {
-        "type": "asset",
-        "asset": "valve-nameplate-panel"
-      },
       "transform": {
-        "position": [0.7, 1.3, 0.9],
-        "rotationDeg": [0, -7.8, 0]
+        "position": [
+          -1.565,
+          1.3,
+          -12.318
+        ],
+        "rotationDeg": [
+          0,
+          164.58,
+          0
+        ]
       }
     },
     {
-      "id": "valve",
-      "name": "Valve",
-      "content": {
-        "type": "asset",
-        "asset": "valve"
-      },
-      "transform": {
-        "position": [0, 1.3, 0]
-      },
       "components": {
-        "RayInteractable": {},
         "Ghostable": {},
+        "RayInteractable": {},
         "Valve": {
           "from": "tk404",
-          "to": "tk401",
-          "open": false
+          "open": false,
+          "to": "manifold"
         }
+      },
+      "content": {
+        "asset": "valve",
+        "type": "asset"
+      },
+      "id": "valve",
+      "name": "Valve",
+      "transform": {
+        "position": [
+          -1.857,
+          1.3,
+          -11.257
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
       }
     },
     {
-      "id": "path-status-panel",
-      "name": "Path Status Panel",
       "content": {
-        "type": "asset",
-        "asset": "path-status-panel"
+        "asset": "valve-nameplate-hv4002-panel",
+        "type": "asset"
       },
+      "id": "valve-export-nameplate",
+      "name": "Valve Export Nameplate",
       "transform": {
-        "position": [0, 2.5, 4]
+        "position": [
+          2.24,
+          1.3,
+          -14.07
+        ],
+        "rotationDeg": [
+          0,
+          209.65,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {},
+        "RayInteractable": {},
+        "Valve": {
+          "from": "manifold",
+          "open": false,
+          "to": "linea-exportacion"
+        }
       },
+      "content": {
+        "asset": "valve",
+        "type": "asset"
+      },
+      "id": "valve-export",
+      "name": "Valve Export",
+      "transform": {
+        "position": [
+          2.785,
+          1.3,
+          -13.114
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-stub",
+        "type": "asset"
+      },
+      "id": "pipe-export-stub",
+      "name": "Pipe Export Stub",
+      "transform": {
+        "position": [
+          3.945,
+          1.3,
+          -13.578
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-endcap",
+        "type": "asset"
+      },
+      "id": "pipe-export-endcap",
+      "name": "Pipe Export Endcap",
+      "transform": {
+        "position": [
+          5.107,
+          1.3,
+          -14.042
+        ],
+        "rotationDeg": [
+          0,
+          21.801,
+          0
+        ]
+      }
+    },
+    {
+      "content": {
+        "asset": "valve-nameplate-hv4003-panel",
+        "type": "asset"
+      },
+      "id": "valve-secondary-nameplate",
+      "name": "Valve Secondary Nameplate",
+      "transform": {
+        "position": [
+          -3.533,
+          1.3,
+          -9.004
+        ],
+        "rotationDeg": [
+          0,
+          26.57,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {},
+        "RayInteractable": {},
+        "Valve": {
+          "from": "manifold",
+          "open": false,
+          "to": "destino-secundario"
+        }
+      },
+      "content": {
+        "asset": "valve",
+        "type": "asset"
+      },
+      "id": "valve-secondary",
+      "name": "Valve Secondary",
+      "transform": {
+        "position": [
+          -4.025,
+          1.3,
+          -9.988
+        ],
+        "rotationDeg": [
+          0,
+          -153.43,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-stub",
+        "type": "asset"
+      },
+      "id": "pipe-secondary-stub",
+      "name": "Pipe Secondary Stub",
+      "transform": {
+        "position": [
+          -5.143,
+          1.3,
+          -9.429
+        ],
+        "rotationDeg": [
+          0,
+          -153.43,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-endcap",
+        "type": "asset"
+      },
+      "id": "pipe-secondary-endcap",
+      "name": "Pipe Secondary Endcap",
+      "transform": {
+        "position": [
+          -6.261,
+          1.3,
+          -8.87
+        ],
+        "rotationDeg": [
+          0,
+          -153.43,
+          0
+        ]
+      }
+    },
+    {
       "components": {
         "ScreenSpace": {
-          "top": "20px",
+          "height": "70px",
           "left": "20px",
-          "width": "260px",
-          "height": "70px"
+          "top": "20px",
+          "width": "260px"
         }
+      },
+      "content": {
+        "asset": "path-status-panel",
+        "type": "asset"
+      },
+      "id": "path-status-panel",
+      "name": "Path Status Panel",
+      "transform": {
+        "position": [
+          0,
+          2.5,
+          -16
+        ]
       }
     }
-  ]
+  ],
+  "player": {
+    "transform": {
+      "position": [
+        0,
+        0,
+        -18
+      ],
+      "rotationDeg": [
+        0,
+        180,
+        0
+      ]
+    }
+  },
+  "resources": {},
+  "units": "meters",
+  "version": "iwsdk.scene.v1"
 }

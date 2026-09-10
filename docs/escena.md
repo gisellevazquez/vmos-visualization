@@ -159,15 +159,43 @@ envolvente y placa de válvula (`MOV-4001`), ninguno con `Ghostable` para que
 queden siempre visibles. Ver las entradas correspondientes en
 `desiciones_diseño.md` por los números.
 
-**Brecha de fidelidad reconocida (no atajo silencioso):** el manifold está
-decorado en el eje directo TK404–TK401, sobre la posición actual de la
-válvula, en vez de reubicado a un costado como sugiere el diagrama de la
-sección 3. Reubicarlo requiere una derivación/codo de caño que todavía no
-existe como asset — se resuelve junto con el desvío, no antes.
+**Desvío aplicado:** el manifold se reubicó fuera del eje directo
+TK404–TK401 (perpendicular, "a un costado", como pide la sección 3). Ahora
+`tk404` entra al manifold y de ahí se reparte hacia `linea-exportacion`
+(destino correcto, el que declara el panel de misión) o `destino-secundario`
+(señuelo), con tres válvulas (`HV-4001`/`HV-4002`/`HV-4003`) en vez de una.
+`ValveSystem` distingue tres estados — incompleto / completo / completo
+hacia el destino equivocado — en vez de solo completo/incompleto. Ver "El
+desvío: segunda y tercera válvula" en `desiciones_diseño.md` por el detalle
+completo (grafo, geometría de la T, valores de reubicación).
 
-**Siguiente:** segunda y tercera válvula formando un desvío (el manifold
-fuera de eje del diagrama se resuelve en el mismo paso), para que exista una
-ruta que puede estar completa hacia el destino equivocado.
+**Brecha nueva, reconocida igual que la anterior:** `tk401` queda sin línea
+propia modelada por ahora — no tiene arista en el grafo ni caño decorativo.
+Agregársela ahora choca con la regla de más abajo de no sumar tanques hasta
+que el manifold y las válvulas estén resueltos; se resuelve cuando le toque
+su propia fase.
+
+**Corregido tras testeo del usuario (mismo día):** dos hallazgos de la
+primera versión del desvío. Uno, HV-4001 y HV-4002 no se leían desde el
+spawn (geometría propia ocluyendo la línea de vista, no un problema de
+`Ghostable`) — reubicado. Dos, no había forma de saber si una válvula estaba
+abierta o cerrada sin tocarla — el estado ahora es geometría del mundo: cada
+válvula tiene una manija tipo mariposa que gira sola cuando se opera,
+alineada con el caño si está abierta, cruzada si está cerrada. Sin color, sin
+luz — mismo principio de "identificador en el mundo, estado en la interfaz"
+que ya regía para los nombres de tanque, extendido a que el estado *físico*
+de una válvula tampoco es un reporte de sistema. Ver "HV-4003 quedaba tapado
+desde el spawn" y "La válvula muestra su posición en el mundo, no con color"
+en `desiciones_diseño.md`.
+
+**Siguiente:** panel de investigación (hilo estilo feed, ver
+`desiciones_diseño.md` — "Panel de investigación: hilo con fuentes").
+
+**Contenido de la app, no documentación:** `feed.md` vive en
+`public/data/feed.md`, no en `docs/`. Es el contenido real de un panel
+espacial (el hilo de investigación) — el runtime lo sirve y lo parsea, no es
+material de proceso del proyecto como este archivo o
+`desiciones_diseño.md`.
 
 ---
 

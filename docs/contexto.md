@@ -87,6 +87,158 @@ Pendiente
 
 Estudio de Impacto Ambiental de VMOS y su Adenda. Existe y fue aprobado; la Secretaría de Ambiente y Cambio Climático de Río Negro lo usa como referencia de fiscalización. No localizado en abierto. 
 
+## Nota previa: qué son estos documentos
+ 
+Tres tipos distintos, conviene no mezclarlos:
+ 
+- **49 CFR Partes 192 y 195** — el *Code of Federal Regulations* de Estados
+  Unidos. Es **ley**, de cumplimiento obligatorio. La Parte 195 cubre ductos
+  de líquidos peligrosos (crudo, productos refinados); la 192, gas.
+  La autoridad que la aplica es **PHMSA** (Pipeline and Hazardous Materials
+  Safety Administration), del Departamento de Transporte.
+- **API RP** — *Recommended Practice* del American Petroleum Institute. En
+  principio son recomendaciones de la industria, no ley. Pero cuando una
+  regulación las **incorpora por referencia**, pasan a ser obligatorias para
+  quien está bajo esa regulación. Es lo que ocurre con API RP 1165 y 1168
+  dentro de esta regla.
+- **ISA-18.2 / IEC 62682 / EEMUA 191** — estándares generales de gestión de
+  alarmas para industrias de proceso, no específicos de ductos.
+### Advertencia de jurisdicción
+ 
+**PHMSA es regulación estadounidense y no aplica a VMOS.** En Argentina la
+competencia es de la Secretaría de Energía y los organismos provinciales
+correspondientes. Este marco se cita como **referencia internacional de la
+industria**, no como normativa aplicable al proyecto. No afirmar en ningún
+lado que VMOS está sujeto a estas reglas.
+ 
+---
+ 
+## Control Room Management / Human Factors — PHMSA
+ 
+**Regla final.** 49 CFR Partes 192 y 195, Enmiendas 192-112 y 195-93.
+Emitida el 20 de noviembre de 2009. Procedimientos exigibles desde el
+1 de febrero de 2012.
+`https://www.phmsa.dot.gov/sites/phmsa.dot.gov/files/docs/195-93.DOC`
+ 
+La sección operativa para ductos de líquidos es **§195.446, Control room
+management**. Aplica a todo operador de un ducto con un controlador que
+monitorea y controla la instalación a través de un sistema SCADA.
+ 
+Lo relevante para este proyecto:
+ 
+### Diseño de pantallas — §195.446(c)(1)
+Obliga a implementar **API RP 1165** cada vez que un sistema SCADA se agrega,
+expande o reemplaza, salvo que el operador demuestre que ciertas
+disposiciones no son practicables.
+ 
+API RP 1165 es la *Recommended Practice for Pipeline SCADA Displays*: mejores
+prácticas para diseñar e implementar las pantallas que usan los controladores
+para evaluar la información disponible en todas las condiciones operativas.
+ 
+**Por qué importa:** existe un estándar de industria dedicado al diseño de
+pantallas para operadores de ductos, y una regulación federal lo vuelve
+obligatorio. El diseño de la interfaz entre persona e información no es una
+preocupación importada desde afuera de la disciplina: ya está dentro del
+marco normativo del sector.
+ 
+### Gestión de alarmas — §195.446(e)
+Exige un plan escrito de gestión de alarmas para lograr una respuesta
+efectiva del controlador. Entre sus provisiones:
+ 
+- Revisar las alarmas de seguridad para asegurar que sean **precisas**.
+- Identificar mensualmente los puntos que hayan quedado fuera de escaneo,
+  con alarmas inhibidas, que hayan **generado alarmas falsas**, o con valores
+  forzados o manuales por más tiempo del necesario.
+- Verificar los valores de consigna y las descripciones de alarma al menos
+  una vez al año.
+- **Monitorear el contenido y volumen de actividad dirigida a cada
+  controlador**, al menos anualmente, para asegurar que tenga tiempo
+  suficiente para analizar y reaccionar a las alarmas entrantes.
+**Por qué importa:** ese último punto regula explícitamente la **carga
+cognitiva**. La norma reconoce que un controlador puede recibir más
+información de la que puede procesar, y obliga a medirlo. Y el punto de las
+alarmas falsas reconoce que el sistema puede reportar cosas que no son
+ciertas.
+ 
+### Aprendizaje de incidentes — §195.446(g)(1)
+Obliga a revisar los accidentes reportables **para determinar si las acciones
+de la sala de control contribuyeron al evento** y, en ese caso, corregir
+deficiencias relacionadas con fatiga del controlador, equipos de campo,
+procedimientos, y configuración y desempeño del sistema SCADA.
+ 
+**Por qué importa:** la regulación asume que la sala de control puede
+contribuir a un accidente, y lo institucionaliza como revisión obligatoria.
+No es una hipótesis de diseño: es una categoría de causa reconocida.
+ 
+### Entrenamiento con simulador — §195.446(h)
+El programa de capacitación debe incluir, entre otros elementos:
+ 
+- Responder a condiciones operativas anormales que puedan ocurrir
+  **simultáneamente o en secuencia**.
+- **Uso de un simulador computarizado, o un método no computarizado (de
+  mesa), para entrenar a los controladores a reconocer condiciones operativas
+  anormales.**
+- Entrenamiento que provea al controlador un **conocimiento práctico del
+  sistema de ductos**, especialmente durante el desarrollo de condiciones
+  anormales.
+- Para configuraciones operativas que se usan de forma **periódica pero
+  infrecuente**, dar la oportunidad de **repasar los procedimientos
+  relevantes con anticipación** a su aplicación.
+**Por qué importa:** el entrenamiento por simulación para reconocer
+condiciones anormales no es una propuesta de este proyecto — es un requisito
+regulatorio en la jurisdicción de referencia. Y el último punto describe casi
+literalmente el caso de un alineamiento poco frecuente: la norma reconoce que
+un procedimiento que se ejecuta rara vez necesita repaso previo.
+ 
+### Fatiga — §195.446(d)
+Exige establecer duraciones de turno y rotaciones que permitan ocho horas de
+sueño continuo, capacitar en estrategias de mitigación de fatiga, entrenar en
+reconocer sus efectos, y fijar un límite máximo de horas de servicio.
+ 
+**Por qué importa:** confirma que los factores humanos son objeto de
+regulación explícita en este dominio, no una consideración blanda.
+ 
+---
+ 
+## Estándares referenciados
+ 
+Los API RP son documentos pagos. Se citan por su alcance y propósito, que son
+públicos. **No citar contenido interno sin haberlos leído.**
+ 
+- **API RP 1165** — *Recommended Practice for Pipeline SCADA Displays.*
+  Diseño e implementación de las pantallas usadas por controladores.
+  Incorporado por referencia en §195.446(c)(1).
+- **API RP 1167** — *Pipeline SCADA Alarm Management.* Prácticas
+  recomendadas para desarrollar, implementar y mantener un programa de
+  gestión de alarmas. Edición 2016.
+- **API RP 1168** — *Pipeline Control Room Management.* Traspaso de turno e
+  información en sala de control. Secciones 5 y 7 incorporadas por referencia
+  en §195.446(c)(5) y (f)(1).
+- **ANSI/ISA-18.2** e **IEC 62682** — gestión de sistemas de alarma para
+  industrias de proceso, con **EEMUA 191** (1999) como antecedente.
+---
+ 
+## Cómo se usa este marco en el proyecto
+ 
+El argumento que habilita, y sus límites:
+ 
+> Existe un marco normativo específico para la interacción entre
+> controladores e información en operaciones de ductos. Obliga a diseñar las
+> pantallas según estándar, a gestionar las alarmas, a medir la carga de
+> información dirigida a cada controlador, a entrenar con simuladores para
+> reconocer condiciones anormales, y a revisar tras cada accidente si las
+> acciones de sala de control contribuyeron. Que esa arquitectura exista y se
+> mantenga vigente indica que la legibilidad de la información operativa es
+> una condición a gestionar de forma continua, no un problema resuelto.
+ 
+**Lo que este marco NO habilita afirmar:**
+- Que VMOS esté sujeto a estas normas. No lo está.
+- Que este proyecto cumpla, implemente o se ajuste a ninguna de ellas.
+- Que este proyecto prevenga incidentes o mejore la seguridad operativa.
+El marco establece que el problema es reconocido y regulado. No valida
+ninguna solución, y menos esta.
+ 
+
 6. Descargo
 
 ⚠️ Este proyecto es un ejercicio de diseño independiente, sin fines comerciales. No está afiliado, patrocinado ni respaldado por VMOS S.A., YPF S.A., ni ninguna de las empresas del consorcio Vaca Muerta Oil Sur.

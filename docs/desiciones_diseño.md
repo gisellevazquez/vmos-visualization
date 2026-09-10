@@ -70,6 +70,27 @@ tanques de 82 m de diámetro, ~35 m de altura, seis unidades.
 **Pendiente:** la altura aparece como 35 m en unas fuentes y 38 m en otras.
 Elegir una y citarla.
  
+**Sobre el antecendente Marshall** Este es un ejercicio de diseño sobre un problema documentado y todavía vigente. No fue validado con operadores ni con especialistas de dominio. No propone reemplazar ningún sistema. Muestra cómo abordo un problema de legibilidad espacial, con datos públicos y limitaciones declaradas.
+
+### Se descartó reducir el proyecto a un explorador informativo
+**Decidido.**
+Ante la imposibilidad de validar con operadores se evaluó reemplazar la
+mecánica de decisión por un recorrido informativo de la instalación.
+
+**Descartado porque:** los identificadores y descripciones de un explorador
+también habría que inventarlos — mismo riesgo de exactitud, sin el aporte
+de diseño que lo justifica. Y compite con material institucional real.
+
+**Se corrige el reclamo, no el artefacto.** El proyecto no propone un
+sistema para operadores ni afirma prevenir ningún incidente. Es un ejercicio
+de diseño sobre un problema documentado y vigente, sin validación de dominio.
+
+**El problema no está resuelto en la industria:** EEMUA 191 (1999) e
+ISA-18.2 (2009) existen precisamente porque la sobrecarga y la mala lectura
+de información en salas de control son condiciones crónicas.
+
+Existe un marco regulatorio y normativo específico para la interacción entre controladores e información en operaciones de ductos — PHMSA CRM, API 1165, 1167, 1168 — que obliga a gestionar alarmas, considerar factores humanos y revisar si las acciones de sala de control contribuyeron a cada incidente. Que esa arquitectura normativa exista y siga vigente indica que el problema es una condición a gestionar de forma continua, no un episodio resuelto.
+
 ---
  
 ### El estado se modela como grafo desde el primer día
@@ -556,3 +577,482 @@ Los pendientes se marcan como pendientes y se publican así.
 credibilidad que afirmar de más. El riesgo real de este proyecto nunca fue
 no haber pisado una instalación; es afirmar cosas sin fuente.
  
+ ### Escala real verificada: el embodiment funciona
+**Verificado en visor — 09/09/2026.**
+Con la escena a escala real (tanques de 82 × 35 m) y geometría de primitivas
+grises, sin texturas, la sensación reportada fue de estar en contexto de
+proyecto y lugar.
+
+**Por qué importa:** es la respuesta empírica a "¿por qué esto necesita un
+visor y no una tablet?". Deja de ser un argumento teórico.
+
+**Corolario:** el embodiment no vino del fotorrealismo. Cualquier inversión
+futura en fidelidad visual tiene que justificarse por otra cosa.
+
+---
+
+### La caminata entre tanques es larga y vacía
+**Hallazgo, parcialmente resuelto.**
+El traslado entre tanques resultó tedioso.
+
+**Diagnóstico:** son dos problemas distintos. Que sea *larga* es un dato del
+mundo real y no se corrige. Que sea *vacía* es un problema de diseño.
+
+**Resuelto por investigación, no por diseño:** la referencia de la
+instalación real mostró que los tanques no se conectan entre sí y que el
+ruteo se concentra en un sector de manifold. El operador no camina entre
+tanques cambiando válvulas. El problema se disolvió al entender mejor el
+dominio.
+
+**Tensión que queda abierta:** la distancia entre manifold y tanques sigue
+siendo el motivo por el que no se ve el estado completo de la ruta. Es el
+problema y es el valor al mismo tiempo.
+
+**Descartado explícitamente:** teletransporte. Elimina la distancia y con
+ella el sentido de escala que sí se verificó que funciona.
+
+---
+
+### Identificadores en el mundo, estado en la interfaz
+**Decidido.**
+Los identificadores de tanque van pintados sobre la envolvente, en letras de
+varios metros, como en una playa de tanques real. Las válvulas llevan placa
+con su identificador. Ninguno de los dos es una capa de UI.
+
+El **estado** — válvula abierta o cerrada, camino completo o incompleto — no
+va en el mundo. Lo reporta el sistema y se muestra aparte.
+
+**Por qué:** lo que está pintado o atornillado existe siempre, no depende del
+sistema y no puede mentir. Lo que reporta la interfaz sí puede estar
+equivocado. Esa frontera es la que sostiene el objetivo final del proyecto
+—la divergencia entre lo real y lo reportado—: cuando llegue, el usuario ya
+va a tener aprendido en qué confiar.
+
+**Corrección posterior:** los identificadores de tanque (TK404, TK401) son
+reales y públicos. Los de válvula fueron inventados siguiendo convención de
+industria; los reales están en P&ID de ingeniería, que no son públicos. Se
+usa prefijo `HV-` (hand valve) y no `MOV-`, que corresponde a válvulas de
+accionamiento motorizado y no a las manuales del manifold.
+
+---
+
+### Skybox en lugar de terreno modelado hasta el horizonte
+**Decidido.**
+El cielo y el horizonte lejano se resuelven con skybox. El terreno geométrico
+se limita al área caminable.
+
+**Por qué:** costo de rendimiento casi nulo, que importa en el navegador del
+visor.
+
+**A cuidar:** que el color del borde del piso empate con el horizonte del
+skybox, y que la dirección de la luz direccional coincida con la posición del
+sol de la imagen. Si no, las sombras apuntan mal y rompen la sensación sin
+que se sepa por qué.
+
+**Origen del asset:** [completar — si es HDRI de Poly Haven u otra fuente,
+anotar licencia].
+
+---
+
+### Gaussian Splatting satelital: evaluado y descartado
+**Descartado.**
+Se evaluó reconstruir la instalación mediante Gaussian Splatting a partir de
+imágenes satelitales o datos de mapas.
+
+**Estado del arte relevado:** EOGS (Earth Observation Gaussian Splatting),
+que adapta 3DGS a sensores pushbroom satelitales con corrección radiométrica
+y modelado de sombras, ~300× más rápido que los métodos NeRF previos.
+EOGS++, que opera sobre datos pancromáticos crudos con bundle adjustment
+integrado. SkySplat, ~86× más rápido que EOGS. Los tres con código público.
+
+**Por qué no aplica:**
+- *Resolución.* El mejor error medio reportado es de ~1,80 m. Sobre un tanque
+  de 82 m eso da un volumen reconocible, pero una válvula de 1 m y un caño de
+  0,76 m quedan por debajo del ruido. Todo lo operable desaparece.
+- *Insumos.* Requiere imaginería satelital multi-vista de alta resolución con
+  modelos de cámara RPC. Es material comercial, no descargable.
+- *Tipo de salida.* Modelo de superficie visto desde arriba. No hay geometría
+  a nivel de piso, que es donde está parado el usuario.
+
+**Google Photorealistic 3D Tiles:** descartado también. La cobertura
+fotogramétrica es urbana y Punta Colorada es costa despoblada. La licencia
+complica la publicación. Y la extracción de geometría vía RenderDoc viola los
+términos de servicio.
+
+**Dónde sí encajaría:** paisaje lejano como alternativa al skybox, no equipo
+operable. El candidato técnicamente bueno sería splatting desde imágenes de
+dron, pero no hay acceso a las tomas crudas de la obra.
+
+**Razón de fondo:** ya se verificó que el embodiment funciona con primitivas
+grises. La fidelidad fotográfica no es lo que falta; falta la tarea, el
+desvío y la consecuencia.
+
+---
+
+## El desvío: segunda y tercera válvula
+
+### El grafo deja de ser lineal
+**Decidido.**
+Antes: una sola válvula conectaba `tk404` directo con `tk401` — contradecía
+`escena.md` §1 ("los tanques no se conectan entre sí"), brecha ya reconocida
+en "Sector de manifold: decorado en el eje existente, no reubicado" y
+pospuesta a propósito hasta tener la segunda y tercera válvula.
+
+Ahora: desde `tk404` el crudo entra al manifold (nodo `manifold`, el cuerpo
+de la T) y de ahí se reparte hacia `linea-exportacion` (destino correcto,
+ya declarado por el panel de misión: "despacho de TK404 hacia la linea de
+exportacion") o `destino-secundario` (señuelo). Tres válvulas:
+
+| entidad           | from       | to                  | placa     |
+|--------------------|-----------|---------------------|-----------|
+| `valve`             | `tk404`   | `manifold`          | `HV-4001` |
+| `valve-export`       | `manifold`| `linea-exportacion` | `HV-4002` |
+| `valve-secondary`    | `manifold`| `destino-secundario`| `HV-4003` |
+
+**Combinación con camino completo al destino equivocado:** `HV-4001` +
+`HV-4003` abiertas, `HV-4002` cerrada.
+
+**tk401 sale del grafo activo**, sin arista propia — sigue existiendo como
+tanque completo (domo, recinto, id), pero temporalmente sin línea propia
+modelada. Inventarle una ahora choca con `escena.md` §5 ("no agregar los
+tanques restantes hasta que el manifold y las válvulas estén resueltos") —
+misma lógica que ya se usó para posponer el desvío mismo. **Brecha
+reconocida, no atajo silencioso**, igual que el manifold en el eje
+equivocado lo fue en la pasada anterior.
+
+**Fix de paso:** la placa de `valve` decía `MOV-4001` en el archivo, pese a
+que la corrección a `HV-` (manual, no motorizada) ya estaba loggeada más
+arriba ("Identificadores del mundo") sin aplicarse. Se corrige ahora junto
+con las dos placas nuevas (`HV-4002`, `HV-4003`), mismo prefijo.
+
+### Universo de destinos inferido del grafo, no declarado aparte
+**Decidido.**
+`ValveSystem` necesitaba saber "cuáles son los otros destinos posibles" para
+distinguir *completo hacia el destino correcto* de *completo hacia el
+equivocado* — antes solo evaluaba conectividad para el par `from`/`to`
+declarado en `PathQuery`, sin noción de un tercer estado.
+
+**Cómo se resuelve:** en un grafo en árbol (una raíz, ramas que no vuelven a
+converger) el universo de destinos es "todo nodo que aparece como `to` de
+alguna válvula pero nunca como `from`" — se calcula puro sobre las válvulas
+que ya existen en la escena, sin declarar nada nuevo.
+
+**Alternativa evaluada y descartada:** un componente `Destination` marcando
+nodos en el JSON. Se descarta por agregar componente + entidades para el
+mismo resultado que ya da la inferencia sobre `Valve`. **Si el manifold deja
+de ser un árbol simple** (una válvula que reconecta dos ramas, por ejemplo)
+esta inferencia deja de valer y hay que revisarla — no es válida en general,
+solo para la forma actual del grafo.
+
+### Texto del estado "destino equivocado": provisorio
+**Provisorio — no es una decisión de diseño.**
+El panel ahora puede mostrar `"camino: completo -- destino-secundario"`
+además de `"completo"` / `"incompleto"`. A diferencia del texto del panel de
+misión (pedido con palabras exactas), esta redacción la elegí yo esta
+ronda — nombra el nodo equivocado en vez de decir "equivocado" a secas,
+porque parecía más útil para el rompecabezas, pero no está confirmada. El
+texto interpola directamente el id del nodo (`destino-secundario`), sin una
+etiqueta separada — funciona porque los ids ya se eligieron legibles en
+español; si un id futuro no lo fuera, esto habría que revisarlo.
+
+Sigue sin tildes por el bug de glifos ya documentado ("Identificadores del
+mundo... Hallazgo no relacionado") — no aplica acá de todas formas, ninguna
+de las tres palabras las lleva.
+
+### Geometría de la derivación: T real, sin codo nuevo
+**Decidido.**
+El tramo TK404→manifold no necesitaba una pieza de codo (ya señalada como
+inexistente en "Sector de manifold: decorado en el eje existente") — es un
+solo caño recto en diagonal, desde la pared de TK404 (x=-30, z=0) hasta el
+cabezal del manifold, calculado con la misma trigonometría que ya usa
+`ValveSystem` para el billboard del panel (yaw en el plano XZ, sin
+inclinación porque ambos puntos comparten y=1,3).
+
+**La T es real, no decorativa:** el caño sigue derecho desde TK404 hasta la
+válvula de exportación (`HV-4002`) — son geométricamente la misma línea, sin
+pieza intermedia — y la rama hacia `HV-4003` se desprende a 90° en ese punto.
+Nuevo `pipe-tee.scene-asset.ts`: solo una esfera (radio 0,5 m) que tapa la
+costura de tres caños, mismo criterio que ya se usó para las juntas de la
+berma ("se superponen levemente... invisible a esta escala"). Nuevo
+`pipe-run.scene-asset.ts` (función `createPipeRun(length)`, única fábrica del
+proyecto en vez de archivo por instancia — acá sí hacían falta tres largos
+distintos con el mismo radio/material). Nuevo `pipe-endcap.scene-asset.ts`
+(brida ciega) donde cada rama sale de la escena hacia un destino no
+modelado.
+
+**El caño recto de 60 m que unía las dos paredes de tanque se elimina.** Era
+exactamente la ficción que este paso corrige; dejarlo al lado del ramal
+nuevo hubiera leído como dos líneas distintas cerca de TK404.
+
+**Reubicación del manifold — valores sin verificar en visor propio, solo
+por render de editor:** cabezal en `x=0, z=-12` (perpendicular al eje
+TK404–TK401, "a un costado" según `escena.md` §3), spawn del jugador movido
+a `[0,0,-18]` mirando hacia +Z (mismo criterio de "6 m detrás del cluster de
+válvulas" que ya tenía el spawn original), panel de estado a `[0,2.5,-16]`
+(mismo offset de 2 m detrás del spawn, 4 m del cabezal, que tenía antes).
+Verificado con `scene_render_file` (vistas `top`, `spawn-check`, `quarter`)
+en esta sesión — `visibleNodeIds` incluye toda la geometría nueva, la
+composición del spawn-check muestra los dos tanques simétricos con el
+cluster de válvulas al frente. **No verificado:** lectura en visor real ni
+legibilidad de las placas nuevas a la distancia — sigue pendiente, como ya
+lo estaba la posición del panel de estado en la entrada anterior sobre eso.
+
+**Playón del manifold:** se reposiciona y se rota (`rotationDeg.y` igual al
+del caño principal) para que sus dos soportes internos, que son
+axis-aligned en su espacio local, queden bajo la línea principal otra vez.
+La rama hacia `HV-4003` sale a 90° de esa línea y se queda sin soporte
+propio — brecha reconocida, no se resuelve acá.
+
+## Problemas en testeo y hallazgos: 
+**combinaciones a ciegas**  el unico que veo etiquetado es el HV-4003 el resto ambos dos no se cual es cual, eso es un gran problema. otra cosa, no tengo forma de saber cuando una esta abierta o cerrada, no hay algo que cambie, ej el color simplemente es un cuadrado que le doy "click" y cambia el destino arriba, pero para saber eso tengo que probar combinaciones a ciegas.
+
+---
+
+### HV-4003 quedaba tapado desde el spawn
+**Hallazgo del usuario, resuelto — bug real, no de `Ghostable`.**
+Las tres placas son parte del mundo (`escena.md`, "Qué es entidad y qué es
+decoración") y no llevan `Ghostable`, así que la regla de "siempre visibles"
+nunca estuvo en duda — lo que fallaba era la geometría por debajo: dos
+válvulas quedaban parcial o totalmente tapadas desde el punto de aparición.
+
+**Diagnóstico, con `scene_render_file` contra el spawn real, no a ojo:**
+1. **HV-4001 y su tramo de caño principal no aparecían en `visibleNodeIds`
+   desde `spawn-check`.** La válvula `valve-secondary` (entonces ubicada casi
+   en línea recta entre el spawn y HV-4001) lo tapaba — a esa distancia el
+   cubo de 1,2 m alcanza para ocluir un objeto detrás.
+2. **Las placas de HV-4001 y HV-4002 apuntaban con un error de orientación**
+   de hasta 33° — se habían colocado con una rotación aproximada (180°
+   parejo para las dos) en vez de calcular el ángulo exacto hacia el spawn
+   para cada una. No alcanzaba para taparlas del todo, pero sí para
+   degradar la lectura.
+3. **HV-4003, incluso ya con su placa bien orientada hacia el spawn, seguía
+   sin aparecer en `visibleNodeIds`** al recolocar la rama a 90° de la línea
+   principal (primer intento de arreglo) — quedaba casi exactamente detrás
+   del caño principal y de la T (a ~7° de la línea de mira spawn→cabezal),
+   así que ese caño y esa esfera, más grandes, la tapaban igual. La
+   corrección fue angular, no de rotación de placa: abrir la rama a la
+   izquierda del eje mucho más (de vuelta a un ángulo derivado del propio
+   caño de TK404, pero por el lado contrario, y con la rama alargada de 3 a
+   4,5 m) hasta que la línea de mira spawn→HV-4003 quedara despejada de
+   HV-4001 y del cabezal a la vez. Verificado agregando una vista de
+   autoría temporal apuntada directo a cada válvula, confirmando
+   `visibleNodeIds` antes de borrar esa vista.
+
+**Placas: se recalculó la orientación de las tres** con el mismo método
+(vector spawn − posición de la placa, ángulo exacto, no una rotación
+compartida aproximada) y se las movió al lado de su válvula que da hacia el
+spawn, no a un costado genérico — así ninguna queda detrás del cuerpo de la
+válvula que identifica.
+
+**Por qué importa el método y no solo el resultado:** las tres correcciones
+se verificaron con `scene_render_file` leyendo `visibleNodeIds`, no
+mirando una captura y decidiendo "parece que sí". La tercera en particular
+no se habría encontrado a ojo — a la distancia del render se veía una placa
+del tamaño de un píxel, indistinguible de "no está".
+
+**Pendiente real:** esto se verificó contra el editor (render offline), no
+contra el visor real con las manos del usuario — falta confirmar que a
+distancia interactiva (acercándose, mirando alrededor) las tres se lean
+cómodo. El offset placa-válvula (1,1 m) y el ángulo de apertura de la rama a
+`HV-4003` (¿por qué exactamente ese ángulo y no otro?) siguen siendo
+elección de esta ronda, no una medida — si hace falta más separación, es un
+número para ajustar, no un rediseño.
+
+---
+
+### La válvula muestra su posición en el mundo, no con color
+**Decidido, en respuesta directa al segundo hallazgo del usuario.**
+El pedido: nada de semáforo (verde/rojo) ni luz — la posición de una manija
+es la única fuente de verdad, igual que en una válvula real de compuerta o
+mariposa, donde el vástago o la manija muestran el estado a simple vista sin
+ningún indicador agregado.
+
+**Cómo quedó:** `valve.scene-asset.ts` pasa de un único `Mesh` a un `Group`
+(cuerpo + vástago corto + manija, una barra `BoxGeometry` de 0,9 m montada
+arriba del cuerpo). La manija es el único mesh con nombre `'handle'` —
+`ValveSystem` la ubica vía `entity.object3D.getObjectByName('handle')`, sin
+ids de nodo hardcodeados (mismo criterio de mantener el grafo/la escena como
+fuente de datos que ya usa el resto del sistema). Rotación de la manija:
+0 rad (alineada con el eje local X) si `open`, 90° (cruzada) si no —
+`updateHandles()` la interpola hacia el ángulo objetivo cada frame en vez de
+saltar, a ~540°/s (un cuarto de vuelta en ~0,17 s), así que un toggle se ve
+girar, no teletransportarse. Al cargar la escena no anima: `snapHandles()`
+en `init()` deja cada manija ya en su ángulo correcto, para no arrancar con
+manijas girando solas antes de que el usuario toque nada.
+
+**Por qué el ángulo objetivo depende de la rotación del nodo, no es fijo:**
+"alineada con el caño" solo significa algo si el eje local X de la válvula
+ya apunta en la dirección real del caño en esa posición — por eso las tres
+válvulas ahora llevan `rotationDeg.y` propio en el JSON (antes ninguna lo
+tenía, daba lo mismo con un cubo simétrico). Ese valor es el mismo ángulo
+usado para orientar el tramo de caño correspondiente, no uno nuevo inventado
+para la válvula.
+
+**No verificado:** que la manija se lea con claridad a la distancia y
+ángulo con que un jugador realmente se acerca a operar la válvula — pendiente
+de confirmar en visor, igual que las placas.
+
+---
+
+### Placas: texto cortado y HV-4003 detrás del caño
+**Hallazgo del usuario (con captura del editor), resuelto.**
+Dos problemas de acabado sobre lo de la entrada anterior.
+
+**Texto cortado:** `width: 40` con `padding` de 6 a cada lado dejaba 28
+unidades para el texto; "HV-4001"/"-4002"/"-4003" a `font-size: 9` no
+entraba. Pasa a `width: 54`, `padding` 4, `font-size: 8` en las tres placas
+— mismo cambio, mismo archivo × 3, no una decisión de diseño distinta por
+válvula.
+
+**HV-4003 detrás del caño:** el offset de la entrada anterior apuntaba hacia
+el spawn, un punto fijo lejano — para HV-4001/HV-4002 (que están casi en la
+línea recta hacia el spawn) eso coincide más o menos con el costado libre de
+la válvula, pero HV-4003 sale en un ángulo muy distinto (la rama abierta
+para despejarla del caño principal, ver entrada anterior) y ese mismo offset
+la dejaba del lado que da hacia el caño, no hacia el costado abierto.
+
+**Corregido con una regla más simple y más general:** la placa va al costado
+de la válvula perpendicular a su propio caño (no hacia un punto externo),
+usando la misma rotación que ya tiene el nodo de la válvula — a
+`rotationDeg.y` de la válvula le suma 180° y ese es el ángulo de la placa;
+la posición es la válvula más 1,1 m en esa dirección. HV-4001 y HV-4002 no
+se tocaron (ya se leían bien); solo se recalculó HV-4003 con esta regla.
+Verificado con una vista de autoría temporal parada del lado "bueno" de
+HV-4003, confirmando que la placa entra en `visibleNodeIds` sin que el caño
+esté en el medio — borrada después de verificar, no queda en el JSON final.
+
+---
+
+## Panel de investigación: hilo con fuentes
+
+### Causa real del bug de tildes: no es la fuente, es el charset del generador MSDF
+**Encontrado — la fuente local NO arregló nada, y ahora se sabe por qué.**
+Antes de tocar el panel nuevo, confirmé lo pendiente de la sesión anterior:
+descargué DM Sans, la serví desde `public/ui/fonts/` (sin red externa de por
+medio) y rendericé un panel de prueba con "CORRECCIÓN acotación válvula".
+Mismo resultado: cuadros vacíos en Ó/Á. Eso descarta CORS/red como causa —
+hacía falta ver el código, no adivinar más.
+
+**Encontrado en el código, no supuesto:** `@drawcall/uikitml` (el parser de
+`.uikitml`) resuelve cada `@font-face` llamando
+`new TTFLoader().loadAsync(src)` — **sin opciones** (`fonts.js`,
+`loadTTF()`). El `TTFLoader` de `@pmndrs/uikit` (`loaders/ttf.js`) genera el
+atlas MSDF a partir de un `charset` que, sin config explícita, cae al
+`DEFAULT_OPTIONS.charset` hardcodeado del paquete:
+
+```
+' \tABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!?.,;:\'"()-[]{}@#$%&*+=/\\<>'
+```
+
+Ni una tilde, ni la Ñ. No importa qué fuente se declare ni de dónde se sirva
+— el generador de atlas nunca pide esos glifos, así que nunca existen en la
+textura. El archivo `.uikitml` no tiene forma de pasar un `charset` propio
+(no está en el schema de `css.js`/`tokens.js`); es una limitación del
+formato de autoría, no de una fuente puntual.
+
+**Por qué esto no se arregla para los paneles estáticos ya existentes** (panel
+de misión, hints, placas): sin parchear `@drawcall/uikitml` o
+`@pmndrs/uikit`, no hay manera de pasarles un charset ampliado vía
+`.uikitml`. Siguen sin tildes — ese workaround sigue en pie para ellos, no se
+tocó nada de lo existente.
+
+**Cómo se resuelve para el panel de investigación (sí, para este):** ya
+necesitaba construirse por código para el scroll (ver más abajo), así que la
+lista de mensajes no pasa por `@font-face` de UIKitML — carga la fuente con
+`UIKit.TTFLoader` directo (`@iwsdk/core` re-exporta `@pmndrs/uikit` completo
+sin recortar, confirmado en `node_modules/@iwsdk/core/dist/index.d.ts`), con
+un `charset` propio que agrega el alfabeto español (á é í ó ú ñ Ñ Á É Í Ó Ú
+ü Ü ¿ ¡) al set por default. Es una solución real para el texto que este
+panel necesita, no evitar tildes de nuevo — pero acotada a este panel; no
+es una corrección general del bug.
+
+### Carga de `feed.md`: parseo en runtime, no archivo generado
+**Decidido.**
+`public/data/feed.md` (movido desde `docs/` — es contenido de la app, no
+documentación del proyecto, ver `escena.md`). Un parser chico a mano lee los
+bloques `**[tipo]** Fuente` + párrafo — no hace falta una librería de
+markdown completa para un formato tan regular. Se evaluó un script generador
+tipo `scripts/generate-audio.mjs` emitiendo un `.uikitml` o un `.json`
+armado de antemano, y se descartó: un `.uikitml` generado contradice la
+regla del proyecto de que ese archivo es la fuente de verdad; un `.json`
+generado agrega un paso de regeneración que alguien puede olvidar después de
+editar el `.md`. Parseando en vivo, `feed.md` es la única fuente — se edita
+y el panel lo refleja solo.
+
+### Scroll: no existe en el markup de UIKitML, se construye por código
+**Decidido.**
+Revisado el schema de `@drawcall/uikitml` (`css.js`, `tokens.js`,
+`component-sets.js`): `overflow` no aparece en ningún lado, el parser no lo
+reconoce como propiedad. La librería de base, `@pmndrs/uikit`, sí soporta
+`Container({ overflow: 'scroll' })` (confirmado en
+`node_modules/@pmndrs/uikit/dist/components/container.d.ts`) — la capacidad
+existe, el formato de archivo no la expone.
+
+**Cómo queda:** el marco del panel (fondo, borde, header) se autora en
+`.uikitml` como siempre. La lista de mensajes, que además ya tenía que ser
+código por el parseo de `feed.md`, se construye con `UIKit.Container({
+overflow: 'scroll' })` más un `UIKit.Text` por mensaje, montada dentro de un
+slot del documento cargado — mismo principio que `ValveSystem` ya usa para
+inyectar el texto de estado con `setProperties`, extendido de "una string" a
+"un subárbol de elementos". Input de scroll: thumbstick derecho (eje
+vertical) — X e Y de botón ya están tomados (hints/transparencia), el
+trigger es para interactuar con válvulas.
+
+### Los tres tipos de mensaje se distinguen por posición y acento, no por escala
+**Decidido, corrección del usuario.**
+Primera propuesta: `[acotacion]` más chica que `[fuente]`. El usuario la
+rechazó — una acotación limita lo que afirma la fuente anterior, achicarla
+comunica lo contrario (que pesa menos, no que matiza). Los tres tipos van al
+mismo `font-size` de cuerpo; lo que los distingue es la barra lateral de
+acento (color por tipo) y la posición/indentación, no el tamaño de letra.
+`[correccion-propia]` lleva el acento más notorio de los tres — es el tipo
+que más le importa al proyecto que salte a la vista.
+
+### Ancho, font-size y tope de caracteres: provisorios
+**Provisorio — no decisión de diseño.**
+`width`, `font-size` del cuerpo y el tope blando de ~240 caracteres por
+burbuja son elección de esta ronda, sin medir contra una captura ni contra
+visor real todavía — mismo tratamiento que los números del desvío. Se
+ajustan cuando haya una captura para mirar.
+
+### El diseño visual es temporario
+**Anotado por el usuario, no una decisión de esta ronda.**
+El usuario va a mandar un kit de UI propio más adelante y ahí se revisa
+también cómo se accede a esta UX (el reloj es la solución de esta ronda, no
+necesariamente la final). Lo que se construye ahora — colores, layout,
+disparador de muñeca — es funcional, no final. No vale la pena pulir estética
+hasta que llegue ese kit.
+
+### Implementado — verificado por consola y ECS, no en visor
+**Implementado.**
+`Watch` (componente marca, vacío, mismo rol que `Valve` para su query),
+`watch.scene-asset.ts` (esfera achatada + "pantalla" cian, placeholder),
+`feed-system.ts` (parser de `feed.md`, carga de fuente con charset propio,
+árbol `UIKit.Container`/`Text` construido por código, panel posicionado al
+abrir — no siguiendo al jugador — con billboard de yaw igual al de
+`ValveSystem`).
+
+**Encontrado al probar el charset ampliado — el em dash faltaba.**
+Al recargar el runtime apareció `"Missing glyph info for character —"` — el
+mismo bug, pero para la raya (—) de `feed.md` ("vmos.ar — sitio oficial") y
+del prefijo `CORRECCIÓN — ` que agrega el código. No es un carácter español,
+así que no estaba en el charset ampliado del principio de esta sección.
+Se listaron con un script todos los codepoints de `feed.md` fuera del
+charset base (no se adivinó) y se agregó el que faltaba. Confirmado sin ese
+warning tras recargar.
+
+**Verificado:** `tsc --noEmit` limpio; la entidad `Watch` existe con
+`RayInteractable` (`ecs find`); el documento del panel existe como entidad
+propia; sin errores en consola del runtime tras recargar varias veces.
+**No verificado:** que el reloj responda al ray+trigger, que el panel se
+posicione bien frente al jugador real, que el scroll con el stick derecho
+funcione, ni legibilidad en visor — nada de esto se puede probar sin
+manos/cabeza reales o una sesión XR emulada más involucrada que un
+screenshot. Mismo estado que el resto de lo agregado hoy: estructuralmente
+sano, sin confirmar en uso.
+
+**Nota aparte, no tocada:** al abrir la escena en el editor para estas
+pruebas, el nodo `ground` apareció con `"scale": [1, 1, 3.1304]` que nadie
+pidió — no lo revertí porque no sé si fue un ajuste automático del editor
+o algo previo sin loggear; el usuario decide si vuelve a 1.
+
