@@ -7,8 +7,12 @@
 
 import { AssetType, defineAssets } from '@iwsdk/core';
 import ground from './scene-assets/ground.scene-asset.js';
+import manifoldPad from './scene-assets/manifold-pad.scene-asset.js';
 import pipeSegment from './scene-assets/pipe.scene-asset.js';
+import shed from './scene-assets/shed.scene-asset.js';
 import tank from './scene-assets/tank.scene-asset.js';
+import tankEnclosure from './scene-assets/tank-enclosure.scene-asset.js';
+import tankStair from './scene-assets/tank-stair.scene-asset.js';
 import valve from './scene-assets/valve.scene-asset.js';
 
 const publicAssetUrl = (filePath: string): string =>
@@ -57,8 +61,12 @@ export default defineAssets({
   },
   ground,
   tank,
+  'tank-enclosure': tankEnclosure,
+  'tank-stair': tankStair,
+  shed,
   'pipe-segment': pipeSegment,
   valve,
+  'manifold-pad': manifoldPad,
   'path-status-panel': {
     url: publicAssetUrl('ui/path-status.uikitml'),
     type: AssetType.UIKitML,
@@ -68,5 +76,25 @@ export default defineAssets({
     url: publicAssetUrl('ui/controller-hints.uikitml'),
     type: AssetType.UIKitML,
     name: 'Controller Hints',
+  },
+  'mission-panel': {
+    url: publicAssetUrl('ui/mission-briefing.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'Mission Briefing',
+  },
+  'tk404-id-label': {
+    url: publicAssetUrl('ui/tank-id-tk404.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'TK404 Label',
+  },
+  'tk401-id-label': {
+    url: publicAssetUrl('ui/tank-id-tk401.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'TK401 Label',
+  },
+  'valve-nameplate-panel': {
+    url: publicAssetUrl('ui/valve-nameplate.uikitml'),
+    type: AssetType.UIKitML,
+    name: 'Valve Nameplate',
   },
 });

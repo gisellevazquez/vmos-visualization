@@ -38,7 +38,7 @@
     "features": {
       "locomotion": {
         "useWorker": true,
-        "initialPlayerPosition": [-127, 0, 0]
+        "initialPlayerPosition": [0, 0, 6]
       },
       "grabbing": true,
       "physics": true,

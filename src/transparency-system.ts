@@ -17,6 +17,11 @@ import { Ghostable } from './ghostable-component.js';
 
 const GHOST_OPACITY = 0.16;
 
+/**
+ * Global toggle: applies to every Ghostable entity's whole mesh subtree, not
+ * just tanks — tanks, pipe segments, and the valve all carry Ghostable so the
+ * same button ghosts the full installation, not one object type.
+ */
 export class TransparencySystem extends createSystem({
   ghostables: { required: [Ghostable] },
 }) {
@@ -37,18 +42,28 @@ export class TransparencySystem extends createSystem({
       if (object == null) {
         return;
       }
-      const body = object.getObjectByName('body') as Mesh | undefined;
-      const edges = object.getObjectByName('edges') as LineSegments | undefined;
-      if (body != null) {
-        const material = body.material as MeshStandardMaterial;
-        material.transparent = this.active;
-        material.opacity = this.active ? GHOST_OPACITY : 1;
-        material.depthWrite = !this.active;
-      }
-      if (edges != null) {
-        const material = edges.material as LineBasicMaterial;
-        material.opacity = this.active ? 1 : 0;
-      }
+      object.traverse((child) => {
+        if (child instanceof LineSegments) {
+          // Tanks carry a dedicated edge outline (see tank.scene-asset.ts)
+          // that only reads once the fill goes see-through; pipe/valve
+          // meshes have no such child, so this branch simply never matches
+          // for them.
+          const material = child.material as LineBasicMaterial;
+          material.opacity = this.active ? 1 : 0;
+          return;
+        }
+        if (child instanceof Mesh) {
+          const material = child.material as MeshStandardMaterial;
+          material.transparent = this.active;
+          material.opacity = this.active ? GHOST_OPACITY : 1;
+          material.depthWrite = !this.active;
+          // Some meshes (the valve in particular) don't pick up a live
+          // .transparent/.opacity change without this — verified in the
+          // emulator: without needsUpdate the values mutate correctly in
+          // memory but the render stays fully opaque.
+          material.needsUpdate = true;
+        }
+      });
     });
   }
 }

@@ -1,0 +1,24 @@
+<style>
+  .plate {
+    width: 40;
+    padding-top: 4;
+    padding-right: 6;
+    padding-bottom: 4;
+    padding-left: 6;
+    background-color: #2a2d30;
+    border-color: #55595d;
+    border-width: 1;
+    border-radius: 4;
+    justify-content: center;
+    align-items: center;
+  }
+  .id {
+    color: #f6fbff;
+    font-size: 9;
+    font-weight: 700;
+    text-align: center;
+  }
+</style>
+<div class="plate">
+  <div class="id">MOV-4001</div>
+</div>

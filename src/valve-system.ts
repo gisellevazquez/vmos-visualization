@@ -6,6 +6,7 @@
  */
 
 import { createSystem, Pressed, UIKit, UIKitMLAsset } from '@iwsdk/core';
+import { Vector3 } from 'three';
 import { PathQuery } from './path-query-component.js';
 import { Valve } from './valve-component.js';
 
@@ -17,6 +18,9 @@ export class ValveSystem extends createSystem({
   valveConfirmed: { required: [Valve, Pressed] },
   pathQuery: { required: [PathQuery] },
 }) {
+  private readonly headWorldPosition = new Vector3();
+  private readonly panelWorldPosition = new Vector3();
+
   init(): void {
     const unsubscribe = this.queries.valveConfirmed.subscribe(
       'qualify',
@@ -28,6 +32,29 @@ export class ValveSystem extends createSystem({
     );
     this.cleanupFuncs.push(unsubscribe);
     this.refreshPathStatus();
+  }
+
+  update(): void {
+    this.billboardStatusPanel();
+  }
+
+  // Panel lives at a fixed point above the valve (world space), not on the
+  // observer — see "Ubicación del panel de estado" in desiciones_diseño.md.
+  // Only its yaw tracks the player's head, so it keeps facing whoever is
+  // reading it without tilting the text off-level. ScreenSpace reparents the
+  // panel's UIKitDocument to the camera outside XR (2D HUD fallback) and back
+  // to its scene node on entering XR — billboarding only makes sense once
+  // it's back in world space, so skip it while still under the camera.
+  private billboardStatusPanel(): void {
+    const panel = this.world.getSceneObject<UIKitMLAsset>(STATUS_PANEL_NODE_ID);
+    const document = panel?.document;
+    if (document == null || document.parent === this.camera) {
+      return;
+    }
+    this.player.head.getWorldPosition(this.headWorldPosition);
+    document.getWorldPosition(this.panelWorldPosition);
+    this.headWorldPosition.y = this.panelWorldPosition.y;
+    document.lookAt(this.headWorldPosition);
   }
 
   private pathExists(from: string, to: string): boolean {

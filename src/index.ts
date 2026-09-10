@@ -8,6 +8,7 @@
 import { World } from '@iwsdk/core';
 import projectOptions from 'virtual:iwsdk-project';
 import { ControllerHintSystem } from './controller-hint-system.js';
+import { MissionBriefingSystem } from './mission-briefing-system.js';
 import { PanelSystem } from './panel.js';
 import { RobotSystem } from './robot.js';
 import { TransparencySystem } from './transparency-system.js';
@@ -22,4 +23,5 @@ World.create(
   world.registerSystem(ValveSystem);
   world.registerSystem(TransparencySystem);
   world.registerSystem(ControllerHintSystem);
+  world.registerSystem(MissionBriefingSystem);
 });
