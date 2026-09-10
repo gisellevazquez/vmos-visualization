@@ -169,11 +169,12 @@ hacia el destino equivocado — en vez de solo completo/incompleto. Ver "El
 desvío: segunda y tercera válvula" en `desiciones_diseño.md` por el detalle
 completo (grafo, geometría de la T, valores de reubicación).
 
-**Brecha nueva, reconocida igual que la anterior:** `tk401` queda sin línea
-propia modelada por ahora — no tiene arista en el grafo ni caño decorativo.
-Agregársela ahora choca con la regla de más abajo de no sumar tanques hasta
-que el manifold y las válvulas estén resueltos; se resuelve cuando le toque
-su propia fase.
+**Brecha cerrada:** `tk401` ya tiene línea propia decorativa hacia el sector
+del manifold — sin válvula, sin arista en el grafo, no participa de la
+mecánica. Cuando el desvío sacó a `tk401` del grafo activo (ver más abajo),
+la razón para posponer su línea (que "todavía era destino del grafo") dejó
+de aplicar; ver "TK401: de destino del grafo a escenografía" en
+`desiciones_diseño.md`.
 
 **Corregido tras testeo del usuario (mismo día):** dos hallazgos de la
 primera versión del desvío. Uno, HV-4001 y HV-4002 no se leían desde el
@@ -201,8 +202,14 @@ material de proceso del proyecto como este archivo o
 
 ## 5. Qué no hacer
 
-- **No agregar los tanques restantes** hasta que el manifold y las válvulas
-  estén resueltos. Son escenografía; se suman al final.
+- **No agregar tanques nuevos ni elementos que participen del grafo** (nodos,
+  válvulas, aristas) hasta que la mecánica actual esté resuelta. Pero
+  completar la geometría **decorativa** de lo que ya está en escena — como la
+  línea propia de un tanque ya modelado, sin válvula ni arista — no espera a
+  eso: si su ausencia contradice una regla ya verificada (§1, "cada tanque
+  tiene una línea propia"), es una ficción visible, no una brecha a sostener.
+  Ver "TK401: de destino del grafo a escenografía" en `desiciones_diseño.md`
+  por qué esta distinción no estaba escrita hasta ahora.
 - **No introducir teletransporte.** La distancia es parte del problema y
   sostiene el sentido de escala, que ya se verificó que funciona.
 - **No resolver el panel de estado por conveniencia.** Hoy es un HUD fijo y

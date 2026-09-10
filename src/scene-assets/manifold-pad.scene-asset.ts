@@ -12,7 +12,10 @@ import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from '@iwsdk/core';
 // here aren't sourced, just enough to read as a paved apron with visible
 // pipe support instead of the line floating unsupported. See
 // docs/desiciones_diseño.md.
-const APRON_SIZE = 10;
+// 8 m, not the original 10 — shrunk to buy clearance from the TK404 berm
+// within a 30 m corridor that's fixed by tank spacing. See "El corredor no
+// tiene margen para centrar, hay que achicar" in docs/desiciones_diseño.md.
+const APRON_SIZE = 8;
 const APRON_THICKNESS = 0.1;
 // Pipe/valve sit at y=1.3 with a 0.38 m pipe radius (pipe-run.scene-asset.ts,
 // shared with the scene JSON's manifold placement) — support height reaches

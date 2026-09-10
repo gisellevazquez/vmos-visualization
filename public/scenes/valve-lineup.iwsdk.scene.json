@@ -256,6 +256,52 @@
         "Ghostable": {}
       },
       "content": {
+        "asset": "pipe-tk401-line",
+        "type": "asset"
+      },
+      "id": "pipe-tk401-line",
+      "name": "Pipe TK401 Line (decorative)",
+      "transform": {
+        "position": [
+          19.5,
+          1.3,
+          -4.5
+        ],
+        "rotationDeg": [
+          0,
+          156.8,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
+        "asset": "pipe-endcap",
+        "type": "asset"
+      },
+      "id": "pipe-tk401-endcap",
+      "name": "Pipe TK401 Endcap (decorative)",
+      "transform": {
+        "position": [
+          9,
+          1.3,
+          -9
+        ],
+        "rotationDeg": [
+          0,
+          156.8,
+          0
+        ]
+      }
+    },
+    {
+      "components": {
+        "Ghostable": {}
+      },
+      "content": {
         "asset": "pipe-main-line",
         "type": "asset"
       },

@@ -29,6 +29,10 @@ const MAIN_LINE_LENGTH = 37.811;
 // point.
 const BRANCH_LENGTH = 4.5;
 const STUB_LENGTH = 2.5;
+// TK401 wall (x=30, z=0) to a blind flange near the manifold sector — purely
+// decorative (no Valve, not part of the graph). See "TK401: de destino del
+// grafo a escenografía" in docs/desiciones_diseño.md.
+const TK401_LINE_LENGTH = 22.847;
 
 const publicAssetUrl = (filePath: string): string =>
   `${import.meta.env.BASE_URL}${filePath.replace(/^\/+/u, '')}`;
@@ -82,6 +86,7 @@ export default defineAssets({
   'pipe-main-line': createPipeRun(MAIN_LINE_LENGTH),
   'pipe-branch': createPipeRun(BRANCH_LENGTH),
   'pipe-stub': createPipeRun(STUB_LENGTH),
+  'pipe-tk401-line': createPipeRun(TK401_LINE_LENGTH),
   'pipe-tee': pipeTee,
   'pipe-endcap': pipeEndcap,
   valve,

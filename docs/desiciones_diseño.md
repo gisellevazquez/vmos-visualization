@@ -1084,3 +1084,67 @@ incluida, misma regla de "al costado, perpendicular al propio caño" que ya
 usaba), `pipe-secondary-stub`, `pipe-secondary-endcap`. `HV-4001`/`HV-4002`
 no se tocaron.
 
+---
+
+### El corredor no tiene margen para centrar, hay que achicar
+**Hallazgo del usuario, medido antes de tocar nada.**
+El usuario reportó el playón "pegado" a la berma de TK404 — razón de dominio,
+no estética: el recinto de contención existe para contener un derrame, y
+poner el área de trabajo justo en su límite compromete ese propósito. Pidió
+más separación sin inventar un número "correcto".
+
+**Medido, no estimado a ojo:** render ortográfico preciso centrado en el
+borde del recinto. Cara exterior de la berma de TK404 en x=-15, esquina más
+cercana del playón (rotado, `APRON_SIZE=10` de entonces) en x=-6,5 →
+**8,5 m reales**, no cero. La captura del usuario en perspectiva exageraba la
+cercanía.
+
+**El primer plan (centrar el conjunto) resultó ser un no-op, encontrado a
+tiempo:** el playón es un cuadrado rotado centrado en el cabezal — sus
+esquinas son simétricas por construcción. El cabezal ya está en x=0, el
+centro exacto del corredor de 30 m (fijado por la separación real entre
+tanques, ya una decisión previa). No había 0,7 m para ganar centrando; ya
+estaba centrado. La única palanca real dentro de un corredor de ancho fijo es
+reducir el propio footprint del conjunto.
+
+**Aplicado:** `APRON_SIZE` de `manifold-pad.scene-asset.ts` baja de 10 a 8 m.
+Nueva separación: **9,8 m** de cada lado (antes 8,5 m) — ganancia real de
+1,3 m, simétrica. Si hace falta más, las palancas que quedan son mayores:
+achicar más el footprint operativo (soportes, radio de la T) o revisar el
+setback recinto-tanque (15 m) o la separación entre tanques, ambas ya
+decisiones previas con su propia justificación — no se tocan sin pedido
+explícito.
+
+---
+
+### TK401: de destino del grafo a escenografía
+**Decisión de una sesión anterior, recién registrada ahora — el usuario
+notó que no estaba anotada.**
+Cuando existía una sola válvula conectando `tk404` directo con `tk401`
+(antes del desvío), `tk401` era el destino del grafo — agregarle una línea
+propia habría sido agregar un elemento que participa de la mecánica antes de
+tenerla resuelta, y por eso `escena.md` §5 ("no agregar tanques hasta que el
+manifold y las válvulas estén resueltos") aplicaba para posponer su línea.
+
+El desvío sacó a `tk401` del grafo activo — pasa a ser sólo escenografía,
+igual que el domo o la escalera de TK404, sin arista ni válvula propia. Esa
+reclasificación pasó en el momento pero nunca se escribió como decisión; la
+brecha siguió documentada con la razón vieja ("se resuelve cuando le toque
+su fase") que ya no describía la situación real.
+
+**Corregido:** `escena.md` §5 distingue ahora "elementos que participan del
+grafo" (siguen esperando) de "geometría decorativa de lo ya modelado" (no
+espera si su ausencia contradice una regla ya verificada — acá, §1: "cada
+tanque tiene una línea propia").
+
+**Implementado con esa regla:** línea decorativa de TK401 (pared en x=30,
+z=0) hasta una brida ciega cerca del sector de manifold, `pipe-tk401-line` +
+`pipe-tk401-endcap` — sin `Valve`, sin arista, no participa del grafo. Punto
+de llegada elegido para leerse "cerca del manifold, sin conectar" — pasa
+junto al playón sin tocarlo (justo afuera de sus esquinas, ya achicado por
+la entrada anterior) y termina en una brida, no en la T. Placeholder de
+puesta en escena, no una medida; ver `desiciones_diseño.md` por el criterio
+ya establecido de "no inventar dimensiones donde no hay dato" — acá no hay
+dato porque la línea misma es una simplificación (§2, "cantidad de
+elementos" del proyecto no modela el ruteo real completo).
+
