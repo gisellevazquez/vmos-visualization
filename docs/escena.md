@@ -96,7 +96,7 @@ disponible, y no se busca fidelidad de detalle sino de escala y disposición.
 ```
         [ recinto TK404 ]        [ recinto TK401 ]
          ┌─────────────┐          ┌─────────────┐
-         │      ⬭      │          │      ⬭      │
+         │      ⬭     │           │     ⬭      │
          └──────┬──────┘          └──────┬──────┘
                 │                        │
         ════════╧════════════════════════╧════════   ← rack sobre calle

@@ -1211,3 +1211,113 @@ el proyecto, así que no aplica), pero si aparece una entidad "creada por
 código que no hace lo que su primer `setValue` dice", este es el primer
 sospechoso.
 
+---
+
+## Reloj y panel de investigación: probado en uso real, no solo en código
+
+**Contexto — lo que falló:** la sesión anterior se dio por buena con
+verificación estática (`ecs query` de posición quieta, captura del editor
+en reposo). El usuario lo probó de verdad y encontró tres cosas rotas que
+esa verificación nunca iba a detectar: el reloj con delay, el reloj mal
+ubicado, y la UI del hilo completamente superpuesta. Correcto reclamo — "no
+podes mandarlo así". Esta vez cada fix se verificó entrando a XR emulado de
+verdad (`xr enter`, `xr set-transform`, `xr select`) y mirando capturas del
+runtime, no solo leyendo el código o consultando estado quieto.
+
+### El reloj tenía delay: `Follower` es el sistema equivocado para un objeto usado
+**Corregido.**
+`Follower`/`FollowSystem` está construido para paneles de UI que no deben
+temblar — tolerancia de 0,4 antes de re-apuntar, y después `lerp` hacia el
+objetivo a velocidad 1. Eso es exactamente lo que se percibe como demora:
+un reloj atado a la muñeca no tiene delay, se mueve rígido con la mano.
+
+**Corregido:** en vez de `Follower`, parentado directo —
+`this.player.gripSpaces.left.add(object)` más una posición local fija. El
+objeto hereda la matriz del grip cuadro a cuadro, sin cálculo de
+persecución. Verificado moviendo el controller izquierdo con
+`xr set-transform` dos veces y capturando después de cada movimiento — el
+reloj aparece exactamente donde se lo movió, sin instancia intermedia.
+
+### El reloj quedaba arriba del control
+**Mejorado, no resuelto del todo — el modelo mismo se va a reemplazar.**
+El offset original (`[0, 0.02, -0.03]`) flotaba separado del modelo del
+control. Con el parentado rígido nuevo se ve apoyado sobre el cuerpo del
+control en vez de suspendido aparte — capturado y confirmado. La posición
+exacta de "dónde va un reloj real" sigue siendo aproximada; el usuario ya
+avisó que el modelo se reemplaza más adelante, así que no se afinó más de
+lo necesario para que deje de leerse como "objeto flotante separado".
+
+### La UI del hilo se superponía: el auto-alto de texto envuelto no resolvía dentro de un contenedor con scroll
+**Corregido, causa aislada con capturas antes/después, no supuesta.**
+Reproducido primero (forzando el panel visible por `ecs set-component`,
+sin pasar por el reloj) para tener una captura exacta del bug del usuario.
+Cada burbuja se creaba con `UIKit.Container({flexDirection:'column',
+width:'100%', ...})` conteniendo dos `UIKit.Text` sin alto explícito,
+esperando que el alto se calculara solo a partir del texto envuelto. En la
+práctica, todas las burbujas terminaban apiladas casi en el mismo punto en
+vez de fluir hacia abajo.
+
+**Se probó `overflow:'visible'` en el contenedor de scroll como diagnóstico**
+(no como fix): con eso, el contenido que se salía del cuadro se leía
+perfecto más abajo, pero la superposición cerca del encabezado seguía
+igual — descartó que el problema fuera el clipping del scroll en sí mismo,
+apuntó a que el alto intrínseco de cada burbuja se calculaba mal (cerca de
+cero) antes de que el scroll entrara en juego.
+
+**Corregido con alto explícito, no dependiendo de auto-medición:** cada
+`Text` (label y body) ahora declara `height` calculado a partir de una
+estimación de líneas (`estimateTextHeight` — ancho útil de la burbuja ÷
+un ancho de carácter conservador, con `Math.ceil` sobre el largo del
+texto). Deliberadamente conservador (sesgado a sobrestimar altura, no a
+subestimarla) — mejor un poco de espacio de más que otra superposición.
+Con esto el contenedor padre suma alturas explícitas de sus hijos, que sí
+es un cálculo de flexbox básico, en vez de depender de la medición
+intrínseca de texto envuelto dentro de un contenedor con scroll, que fue
+lo que no resolvió.
+
+**Verificado con las 4 burbujas reales**, no solo la primera: se subió
+`PANEL_HEIGHT` a un valor temporal grande para ver la pila completa sin
+scroll, se capturó, se confirmó que las cuatro se leen sin superposición y
+con el color de acento correcto por tipo (`fuente` teal, `acotacion`
+ámbar, `correccion-propia` rojo), y se revirtió el valor real (110) antes
+de terminar.
+
+**De paso, encontrado en las mismas capturas:** la scrollbar por defecto se
+veía como un cuadrado blanco liso contra el panel oscuro — sin
+`scrollbarColor` declarado. Se le puso el mismo gris azulado que el borde
+del panel (`#34464d`).
+
+### El panel aparecía detrás del jugador, no adelante
+**Encontrado recién al verificar posición real, no visible en código.**
+`positionPanel()` usaba `player.head.getWorldDirection()` asumiendo
+semántica de cámara (eje -Z, "hacia adelante"). Esa semántica es específica
+de `THREE.Camera` — `Object3D.getWorldDirection()` en general devuelve el
+eje **+Z** del objeto. `player.head` es un `Object3D` común, no una
+`Camera`, así que el vector obtenido apuntaba al revés de lo asumido.
+
+**Encontrado por `ecs query`, no a ojo:** con el jugador mirando hacia las
+válvulas (confirmado por la propia captura del runtime, que las muestra
+adelante), el panel se ubicó en `z=-20` — 2 m más lejos de las válvulas que
+el spawn (`z=-18`), es decir detrás, no adelante.
+
+**Corregido:** se invierte el signo (`addScaledVector(headForward,
+-PANEL_DISTANCE)`). Reverificado con la misma secuencia — el panel quedó en
+`z=-16`, 2 m más cerca de las válvulas que el spawn, adelante, como se
+buscaba. Único uso de `getWorldDirection` en el proyecto; no hace falta
+revisar otro lado.
+
+### Verificado de punta a punta con el emulador de XR, no por partes
+Secuencia real ejecutada, no simulada por separado: `xr enter` → mover
+ambos controllers con `xr set-transform` → apuntar el derecho al reloj con
+`xr look-at` (posición calculada componiendo la rotación real del grip, no
+asumida) → `xr select` → confirmado con `ecs query` que el panel pasa a
+visible y se ubica adelante → captura del runtime mostrando el panel
+legible sobre la escena real → segundo `xr select` → confirmado que vuelve
+a `isVisible:false`. Sin errores en `browser logs` en ningún punto de la
+secuencia.
+
+**Sigue sin verificar:** legibilidad y comodidad de la posición del reloj
+con una mano real (headset físico), y el scroll con el stick derecho (no
+se accionó un thumbstick real en esta pasada, solo se confirmó que el
+panel abre/cierra y se lee bien en la posición inicial).
+

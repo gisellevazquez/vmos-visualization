@@ -7,8 +7,6 @@
 
 import {
   createSystem,
-  FollowBehavior,
-  Follower,
   InputComponent,
   Pressed,
   RayInteractable,
@@ -81,6 +79,27 @@ const TYPE_PREFIX: Record<MessageType, string> = {
   acotacion: '',
   'correccion-propia': 'CORRECCIÓN — ',
 };
+
+// Explicit height per text block, estimated from character count — Text's
+// own auto-height inside a scrollable flex column did not resolve
+// correctly in testing (every bubble rendered stacked on top of the
+// others instead of flowing down; confirmed by screenshot, not assumed).
+// Pinning height sidesteps whatever intrinsic-measurement step wasn't
+// firing. CHARS_PER_CM is deliberately conservative (biased toward more
+// height than needed, not less) — see docs/desiciones_diseño.md.
+const CHARS_PER_CM = 0.32;
+const BODY_LINE_HEIGHT = BODY_FONT_SIZE * 1.3;
+const LABEL_LINE_HEIGHT = LABEL_FONT_SIZE * 1.3;
+
+function estimateTextHeight(
+  text: string,
+  usableWidth: number,
+  lineHeight: number,
+): number {
+  const charsPerLine = Math.max(8, Math.floor(usableWidth * CHARS_PER_CM));
+  const lines = Math.max(1, Math.ceil(text.length / charsPerLine));
+  return lines * lineHeight;
+}
 
 const WRIST_OFFSET: [number, number, number] = [0, 0.02, -0.03];
 const PANEL_DISTANCE = 2;
@@ -185,16 +204,14 @@ export class FeedSystem extends createSystem({
     const entity = this.world.createTransformEntity(object);
     entity.addComponent(RayInteractable, {});
     entity.addComponent(Watch, {});
-    // setValue()/getVectorView() on a component the entity doesn't already
-    // carry is a silent no-op, not an implicit add — confirmed via
-    // `ecs query`, the entity had no Follower component at all and sat at
-    // the scene origin. addComponent() with the full initial value is the
-    // form that actually attaches it. See docs/desiciones_diseño.md.
-    entity.addComponent(Follower, {
-      target: this.player.gripSpaces.left,
-      offsetPosition: WRIST_OFFSET,
-      behavior: FollowBehavior.PivotY,
-    });
+    // Rigid parenting, not Follower — Follower/FollowSystem is a smoothed
+    // chase built for UI panels that shouldn't jitter (tolerance + lerp
+    // speed), which reads as input lag on a worn object. A real watch
+    // strapped to a wrist has zero lag; direct Object3D parenting gives
+    // that for free every frame, no per-frame catch-up math needed. See
+    // docs/desiciones_diseño.md.
+    this.player.gripSpaces.left.add(object);
+    object.position.set(...WRIST_OFFSET);
   }
 
   private async loadFont(): Promise<UIKit.FontFamilies> {
@@ -220,6 +237,10 @@ export class FeedSystem extends createSystem({
         PANEL_HEIGHT - PANEL_PADDING * 2 - HEADER_FONT_SIZE - BUBBLE_GAP,
       overflow: 'scroll',
       gapRow: BUBBLE_GAP,
+      // Default scrollbar rendered plain white against the dark panel —
+      // found in the same debug screenshots as the overlap fix.
+      scrollbarColor: '#34464d',
+      scrollbarWidth: 3,
     });
     for (const message of messages) {
       scrollContainer.add(this.buildBubble(message, fontFamilies));
@@ -274,6 +295,13 @@ export class FeedSystem extends createSystem({
       ...uniformBorderRadius(4),
     });
 
+    const usableWidth =
+      PANEL_WIDTH -
+      PANEL_PADDING * 2 -
+      BUBBLE_PADDING * 2 -
+      TYPE_INDENT[message.type];
+    const bodyText = TYPE_PREFIX[message.type] + message.body;
+
     const label = new UIKit.Text({
       text: message.source,
       fontFamily: FEED_FONT_FAMILY,
@@ -281,15 +309,19 @@ export class FeedSystem extends createSystem({
       fontSize: LABEL_FONT_SIZE,
       fontWeight: 700,
       color: accent,
+      width: '100%',
+      height: LABEL_LINE_HEIGHT,
       marginBottom: 3,
     });
 
     const body = new UIKit.Text({
-      text: TYPE_PREFIX[message.type] + message.body,
+      text: bodyText,
       fontFamily: FEED_FONT_FAMILY,
       fontFamilies,
       fontSize: BODY_FONT_SIZE,
       color: '#e7edf0',
+      width: '100%',
+      height: estimateTextHeight(bodyText, usableWidth, BODY_LINE_HEIGHT),
       lineHeight: 1.3,
     });
 
@@ -315,9 +347,15 @@ export class FeedSystem extends createSystem({
     }
     this.player.head.getWorldPosition(this.headWorldPosition);
     this.player.head.getWorldDirection(this.headForward);
+    // Object3D.getWorldDirection() returns the object's +Z axis, not -Z —
+    // only THREE.Camera overrides it to look-direction (-Z). player.head is
+    // a plain Object3D, so the un-negated vector pointed behind the player:
+    // confirmed by ecs query putting the panel at z=-20 (further from the
+    // valves) while the actual view faced z=-12 (toward them). See
+    // docs/desiciones_diseño.md.
     this.panelWorldPosition
       .copy(this.headWorldPosition)
-      .addScaledVector(this.headForward, PANEL_DISTANCE);
+      .addScaledVector(this.headForward, -PANEL_DISTANCE);
     this.panelWorldPosition.y += PANEL_HEIGHT_OFFSET;
     this.document.position.copy(this.panelWorldPosition);
   }
