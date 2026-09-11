@@ -185,9 +185,16 @@ export class FeedSystem extends createSystem({
     const entity = this.world.createTransformEntity(object);
     entity.addComponent(RayInteractable, {});
     entity.addComponent(Watch, {});
-    entity.setValue(Follower, 'target', this.player.gripSpaces.left);
-    entity.getVectorView(Follower, 'offsetPosition').set(WRIST_OFFSET);
-    entity.setValue(Follower, 'behavior', FollowBehavior.PivotY);
+    // setValue()/getVectorView() on a component the entity doesn't already
+    // carry is a silent no-op, not an implicit add — confirmed via
+    // `ecs query`, the entity had no Follower component at all and sat at
+    // the scene origin. addComponent() with the full initial value is the
+    // form that actually attaches it. See docs/desiciones_diseño.md.
+    entity.addComponent(Follower, {
+      target: this.player.gripSpaces.left,
+      offsetPosition: WRIST_OFFSET,
+      behavior: FollowBehavior.PivotY,
+    });
   }
 
   private async loadFont(): Promise<UIKit.FontFamilies> {

@@ -1173,3 +1173,41 @@ una brida ciega que declara que la línea continúa fuera de escena.
 mismo tipo que el caño tanque-a-tanque que este paso vino a corregir.
 Si un tramo no puede terminar en algo, no se modela.
 
+---
+
+### El reloj no seguía la mano — bug real, no de posición
+**Hallazgo del usuario ("no hay tal reloj"), encontrado y corregido con
+`ecs query`, no a ojo.**
+El reloj existía (confirmado con `ecs find`) pero `ecs query` mostró su
+`Transform.position` en `[0,0,0]` — el origen de la escena, lejísimos del
+spawn actual (`z=-18`). La entidad ni siquiera tenía el componente
+`Follower` en su lista de componentes.
+
+**Causa:** `entity.setValue(Follower, 'target', ...)` /
+`entity.getVectorView(Follower, 'offsetPosition')` sobre un componente que
+la entidad todavía no tiene son un **no-op silencioso** — no lo agregan
+implícitamente, a diferencia de lo que ese patrón (copiado de
+`ControllerHintSystem`, ya existente en el proyecto) parecía sugerir. Sin
+error en consola, sin fallar el build: la entidad simplemente se queda sin
+el componente y `FollowSystem` (que sí está registrado por defecto — se
+confirmó en `node_modules/@iwsdk/core`, no se asumió) nunca la toca.
+
+**Mismo bug encontrado en `ControllerHintSystem`,** que usaba idéntico
+patrón para el panel de controles en la muñeca — nunca siguió la mano en
+ningún momento de este proyecto. Probablemente pasó desapercibido porque en
+layouts viejos de la escena el origen quedaba cerca de donde importaba;
+dejó de disimularse en cuanto el spawn se alejó a `z=-18`.
+
+**Corregido en los dos:** `entity.addComponent(Follower, { target,
+offsetPosition, behavior })` con el objeto completo, en vez de
+`setValue`/`getVectorView` encadenados. Verificado con `ecs query` después
+del fix — `Follower` aparece en la lista de componentes y
+`Transform.position` coincide con el grip del jugador, no con el origen.
+
+**Alcance de la revisión:** se buscó `setValue(Follower` en todo `src/` —
+solo esos dos casos. No se auditaron otros componentes por el mismo patrón
+(`RayInteractable`, `Ghostable`, etc. se agregan con `addComponent` en todo
+el proyecto, así que no aplica), pero si aparece una entidad "creada por
+código que no hace lo que su primer `setValue` dice", este es el primer
+sospechoso.
+

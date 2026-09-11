@@ -34,9 +34,15 @@ export class ControllerHintSystem extends createSystem({
       .instantiate<UIKitMLAsset>(PANEL_ASSET_ID)
       .then((object) => {
         const entity = this.world.createTransformEntity(object);
-        entity.setValue(Follower, 'target', this.player.gripSpaces.left);
-        entity.getVectorView(Follower, 'offsetPosition').set(OFFSET_ABOVE_GRIP);
-        entity.setValue(Follower, 'behavior', FollowBehavior.PivotY);
+        // setValue()/getVectorView() on a component the entity doesn't
+        // already carry is a silent no-op, not an implicit add — this panel
+        // sat at the scene origin, never actually following the grip. See
+        // docs/desiciones_diseño.md.
+        entity.addComponent(Follower, {
+          target: this.player.gripSpaces.left,
+          offsetPosition: OFFSET_ABOVE_GRIP,
+          behavior: FollowBehavior.PivotY,
+        });
         this.panel = object;
         this.applyVisibility();
       });
