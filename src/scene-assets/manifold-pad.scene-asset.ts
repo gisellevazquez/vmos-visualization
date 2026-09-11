@@ -22,11 +22,13 @@ const APRON_THICKNESS = 0.1;
 // exactly to the pipe's underside.
 //
 // The two built-in supports below are still axis-aligned in local space
-// (x=+-SUPPORT_SPACING/2, z=0) — they only land under the main line if this
-// asset's scene node is yawed to match the main line's direction (see the
-// "Reubicación real del manifold" entry in docs/desiciones_diseño.md). The
-// branch toward the secondary valve has no dedicated support of its own —
-// flagged there as a known gap, not fixed here.
+// (x=+-SUPPORT_SPACING/2, z=0) — they only land under a pipe if this
+// asset's scene node is yawed to match that pipe's direction. The manifold
+// is now a 4-way cross (hand-laid out by the user, see "Ruteo manual: cruce
+// de 4 vías" in docs/desiciones_diseño.md); these two supports line up with
+// whichever of the two crossing runs the pad's own rotation matches, not
+// necessarily both. Not every arm has a dedicated support — known gap, not
+// fixed here.
 const SUPPORT_HEIGHT = 1.3 - 0.38;
 const SUPPORT_WIDTH = 0.3;
 const SUPPORT_SPACING = 3; // distance apart along the pipe run (X axis)

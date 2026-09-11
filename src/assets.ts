@@ -18,21 +18,16 @@ import tankStair from './scene-assets/tank-stair.scene-asset.js';
 import valve from './scene-assets/valve.scene-asset.js';
 import watch from './scene-assets/watch.scene-asset.js';
 
-// TK404 wall (x=-30, z=0) straight through the manifold hub (0,-12) to the
-// export valve/endcap — see "Grafo: nodos y aristas" in
-// docs/desiciones_diseño.md for how this length and the branch length below
-// were derived from the manifold offset.
+// Straight run lengths for the manifold's pipe segments — reused across
+// several scene nodes (see "pipe-main-line" duplicated 4x in the scene
+// JSON), each instance repositioned/rotated by hand in the editor to the
+// cross-junction layout in the user's plan-view reference. The length
+// values themselves predate that manual rework and are no longer tied to
+// a single derived TK404-to-export span; see "Ruteo manual: cruce de 4
+// vías" in docs/desiciones_diseño.md.
 const MAIN_LINE_LENGTH = 37.811;
-// Wider than the export side on purpose — see "HV-4003 quedaba tapado desde
-// el spawn" in docs/desiciones_diseño.md: a narrower branch put this valve
-// almost directly behind the tee/main line from the player's standing
-// point.
 const BRANCH_LENGTH = 4.5;
 const STUB_LENGTH = 2.5;
-// TK401 wall (x=30, z=0) to a blind flange near the manifold sector — purely
-// decorative (no Valve, not part of the graph). See "TK401: de destino del
-// grafo a escenografía" in docs/desiciones_diseño.md.
-const TK401_LINE_LENGTH = 25.348;
 
 const publicAssetUrl = (filePath: string): string =>
   `${import.meta.env.BASE_URL}${filePath.replace(/^\/+/u, '')}`;
@@ -86,7 +81,6 @@ export default defineAssets({
   'pipe-main-line': createPipeRun(MAIN_LINE_LENGTH),
   'pipe-branch': createPipeRun(BRANCH_LENGTH),
   'pipe-stub': createPipeRun(STUB_LENGTH),
-  'pipe-tk401-line': createPipeRun(TK401_LINE_LENGTH),
   'pipe-tee': pipeTee,
   'pipe-endcap': pipeEndcap,
   valve,

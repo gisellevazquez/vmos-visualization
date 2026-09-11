@@ -1321,3 +1321,60 @@ con una mano real (headset físico), y el scroll con el stick derecho (no
 se accionó un thumbstick real en esta pasada, solo se confirmó que el
 panel abre/cierra y se lee bien en la posición inicial).
 
+---
+
+## Ruteo manual: cruce de 4 vías
+
+**Decisión del usuario, hecha a mano en el editor visual — registrada acá
+porque no quedó anotada en el momento.**
+El usuario compartió un plano en planta (imagen, no código) y reescribió el
+posicionamiento del manifold directamente en `valve-lineup.iwsdk.scene.json`
+con el editor, sin pasar por mí. Verificado con `scene_render_file` contra
+una vista cenital ajustada al lugar real de `group-1` (no contra las
+coordenadas crudas del JSON, que resultaron engañosas — ver más abajo): el
+resultado es un cruce limpio de dos caños rectos que se cortan en un punto,
+`HV-4001` y `HV-4002` en un eje, `HV-4003` en el otro, y la línea de TK401
+(sin válvula, como pide el plano) completando el cuarto brazo.
+
+**Lo que cambió en la escena, a grandes rasgos:**
+- Manifold, placas y nodos relacionados ahora viven bajo un nodo `group-1`
+  con transform propio — las posiciones de sus hijos son locales a ese
+  grupo, no mundiales directas. Importa para quien lea el JSON crudo.
+- El asset `pipe-main-line` se reutiliza 4 veces (una por tramo recto:
+  bajada de TK404, tramo hacia el cruce, bajada de TK401, tramo hacia el
+  cruce) en vez de un único tronco diagonal — la escena ya no arma la
+  geometría del manifold a partir de un ángulo derivado por fórmula, la
+  arma el usuario a mano, tramo por tramo.
+- Los assets dedicados `pipe-tk401-line`/su constante `TK401_LINE_LENGTH`
+  quedaron sin uso (`grep` del JSON confirma cero referencias) — se
+  borraron del manifiesto en `assets.ts`. La línea de TK401 ahora es una
+  instancia más de `pipe-main-line`, reposicionada.
+
+**El grafo no se tocó — confirmado, no asumido.** Los tres nodos `Valve`
+conservan exactamente `from`/`to` de antes (`tk404→manifold`,
+`manifold→linea-exportacion`, `manifold→destino-secundario`). La mecánica,
+`ValveSystem` y el `PathQuery` no necesitan ningún cambio de código: la
+separación grafo/geometría que se decidió el primer día (ver "El estado se
+modela como grafo desde el primer día", sección Construcción) sostuvo un
+rediseño completo de la geometría sin tocar una línea de lógica.
+
+**Hallazgo metodológico:** las coordenadas crudas del JSON llevaron a una
+lectura equivocada al principio — comparar la rotación de `HV-4001` con la
+del plano hacía parecer que el ruteo real no coincidía con el diagrama.
+Renderizando una vista cenital ajustada a la posición real de `group-1` (no
+al origen del mundo) se confirmó que sí coincide. Con edición manual en el
+editor, verificar contra un render vale más que leer los números del JSON.
+
+**Dos cosas encontradas al revisar, sin tocar — para que el usuario decida:**
+- `pipe-export-stub` tiene `scale: [57.6462, 1, 1]` — un valor muy fuera de
+  rango comparado con todo lo demás en el archivo (el resto usa `scale` 1 o
+  cerca de 1). Puede ser intencional (la línea de exportación extendiéndose
+  lejos fuera de escena) o un arrastre accidental en el editor — no lo
+  cambié.
+- La rama hacia `destino-secundario` (`pipe-secondary-stub`) ya no tiene
+  brida al final — no hay nodo `pipe-secondary-endcap` en el archivo actual.
+  Eso choca con la propia regla del usuario, "Ningún elemento termina en el
+  aire" (más arriba en este documento). No lo agregué solo porque no sé si
+  es un placeholder a medio terminar o una decisión — preguntado, no
+  asumido.
+

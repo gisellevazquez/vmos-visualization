@@ -189,6 +189,16 @@ de una válvula tampoco es un reporte de sistema. Ver "HV-4003 quedaba tapado
 desde el spawn" y "La válvula muestra su posición en el mundo, no con color"
 en `desiciones_diseño.md`.
 
+**Ruteo del manifold: reconstruido a mano por el usuario, cruce de 4 vías.**
+El JSON de escena ya no lo genera el código — el usuario reposicionó y
+rotó cada tramo en el editor visual para armar un cruce limpio (dos caños
+rectos cruzándose en un punto: `HV-4001`/`HV-4002` en un eje,
+`HV-4003` y la línea de TK401 en el otro), siguiendo un plano en planta que
+compartió aparte. El grafo (`Valve.from`/`to`, `PathQuery`) no cambió — sigue
+siendo puramente de datos, desacoplado de la geometría, como estaba pensado
+desde el principio. Ver "Ruteo manual: cruce de 4 vías" en
+`desiciones_diseño.md`.
+
 **Siguiente:** panel de investigación (hilo estilo feed, ver
 `desiciones_diseño.md` — "Panel de investigación: hilo con fuentes").
 
