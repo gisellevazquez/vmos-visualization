@@ -1148,3 +1148,28 @@ ya establecido de "no inventar dimensiones donde no hay dato" — acá no hay
 dato porque la línea misma es una simplificación (§2, "cantidad de
 elementos" del proyecto no modela el ruteo real completo).
 
+**Corregido — la brida quedaba corta, no llegaba al sector de ruteo.** El
+primer punto de llegada (elegido solo para no cruzar el playón) terminaba en
+el aire, a mitad de camino del manifold — la misma clase de ficción que este
+paso venía a evitar, solo que a medio resolver. Recalculado para terminar
+justo afuera de la esquina este del playón (~1,3 m de margen, no lo toca ni
+se une a la línea de TK404) en vez de a 9 m de distancia. Ver "Ningún
+elemento termina en el aire" más abajo — es la regla general de la que esto
+fue el primer incumplimiento.
+
+**De paso:** la casilla (`manifold-shed`) pisaba el trazado nuevo de esta
+línea. Placeholder de escala humana, sin función — se reubica a
+`(-3, 0, -17)`, despejada de la línea de TK401 y del resto del manifold, sin
+otro criterio que no estorbar.
+
+---
+
+### Ningún elemento termina en el aire
+**Decidido.**
+Toda línea modelada llega a algo: un tanque, el cabezal del manifold, o
+una brida ciega que declara que la línea continúa fuera de escena.
+
+**Por qué:** un caño que corta en el vacío es una ficción visible, del
+mismo tipo que el caño tanque-a-tanque que este paso vino a corregir.
+Si un tramo no puede terminar en algo, no se modela.
+
